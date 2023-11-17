@@ -1,1 +1,9 @@
 First commit from PrarthanaSh
+
+Second commit attempted by Prarthana:
+Changes made:
+
+Navigation separated from app.js
+Started on the Navigation structure
+Added placeholders for addexpense screen and groups screen
+Added a dummy reducer and actions file in the data folder
