@@ -49,7 +49,7 @@ function SigninBox({navigation}) {
           onPress={async () => {
             try {
               await signIn(email, password);
-              navigation.navigate('Home');
+              navigation.navigate('HomeSet');
             } catch(error) {
               Alert.alert("Sign In Error", error.message,[{ text: "OK" }])
             }
