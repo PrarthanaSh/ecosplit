@@ -34,12 +34,12 @@ function NavSkeleton() {
 
 function HomeSet() {
     const Tabs = createBottomTabNavigator();
-    // const store = configureStore({
-    //     // reducer: rootReducer,
-    // }); //We might need this later
+    const store = configureStore({
+        reducer: rootReducer,
+    }); //We might need this later
 
     return (
-        // <Provider store={store}> //We might need this later
+    <Provider store={store}>
       <Tabs.Navigator>
         <Tabs.Screen name="Home"
                         component={HomeScreen}
@@ -54,7 +54,7 @@ function HomeSet() {
                                 );
                             }
                         }} />
-        <Tabs.Screen name="Add"
+        <Tabs.Screen name="Add Expense"
                         component={AddExScreen}
                         options={{
                             tabBarIcon: ({ focused, color, size }) => {
@@ -81,7 +81,7 @@ function HomeSet() {
                             }
                         }} />
       </Tabs.Navigator>
-    //   </Provider> //We might need this later
+       </Provider> //We might need this later
     );
   }
 export default NavSkeleton;

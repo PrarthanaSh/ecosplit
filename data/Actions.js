@@ -1,12 +1,14 @@
-// import { initializeApp } from 'firebase/app';
-// import { addDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { addDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore } from 'firebase/firestore';
 
-// import { firebaseConfig } from '../Secrets';
+import { firebaseConfig } from '../Secrets';
 
-// const app = initializeApp(firebaseConfig);
-// const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_EXPENSES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
+import {LOAD_ACTIVITIES } from "./Reducer";
+// import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
+
 
 // const addExpense = (expenseDict, newGroups) => {
 //     return async (dispatch) => {
@@ -89,25 +91,28 @@
 //   }
 // }
 
-// const loadExpenses = () => {
-//     return async (dispatch) => {
-//       let querySnapshot = await getDocs(collection(db, 'ErrorHere'));
-//       let newListExpenses = querySnapshot.docs.map(docSnap => {
-//         return {
-//           ...docSnap.data(),
-//           key: docSnap.id
-//         }
-//       }
-//       )
-//       dispatch({
-//         type: LOAD_EXPENSES,
-//         payload: {
-//             newListExpenses: newListExpenses,
-//         }
-//       }
-//       );
-//     }
-//   }
+const loadActivities = () => {
+    return async (dispatch) => {
+      let querySnapshot = await getDocs(collection(db, 'activityType'));
+      let newListActivities = querySnapshot.docs.map(docSnap => {
+        return {
+          ...docSnap.data(),
+          key: docSnap.id
+        }
+      }
+      )
+      console.log("In Actions .. Load Activities");
+      console.log(newListActivities);
+
+      dispatch({
+        type: LOAD_ACTIVITIES,
+        payload: {
+            newListActivities: newListActivities,
+        }
+      }
+      );
+    }
+  }
 
 //   const loadGroups = () => {
 //     return async (dispatch) => {
@@ -129,4 +134,6 @@
 //     }
 //   }
   
+export {loadActivities}
+
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }

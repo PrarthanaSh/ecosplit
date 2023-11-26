@@ -2,7 +2,7 @@
 // const UPDATE_CONTACT = 'UPDATE_CONTACT';
 // const DELETE_CONTACT = 'DELETE_CONTACT';
 
-// const LOAD_CONTACTS = 'LOAD_CONTACTS';
+const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
 // const ADD_GROUP = 'ADD_GROUP';
@@ -10,11 +10,11 @@
 // const UPDATE_GROUP = 'UPDATE_GROUP';
 
 // const initGroups = [];
-// const initContacts=[];
-// const initialState = {
-//   listContacts: initContacts,
-//   groups: initGroups
-// }
+const initActivities=[];
+const initialState = {
+  listActivities: initActivities,
+  // groups: initGroups
+}
 
 // const addContact = (state, contactDict, groups, key) => {
 //   let { listContacts } = state;
@@ -70,13 +70,12 @@
 //   }
 // }
 
-// const loadContacts = (state, contacts) => {
-
-//   return {
-//     ...state,
-//     listContacts: [...contacts]
-//   }
-// }
+const loadActivities = (state, activities) => {
+  return {
+    ...state,
+    listActivities: [...activities]
+  }
+}
 
 // const loadGroups = (state, groups) => {
 
@@ -139,8 +138,8 @@ function rootReducer(state = initialState, action) {
     //   return updateContact(state, payload.key, payload.contactDict, payload.groups);
     // case DELETE_CONTACT:
     //   return deleteContact(state, payload.key);
-    // case LOAD_CONTACTS:
-    //   return loadContacts(state, payload.newListContacts);
+    case LOAD_ACTIVITIES:
+      return loadActivities(state, payload.newListActivities);
     // case ADD_GROUP:
     //   return addGroup(state, action.payload.groupTitle, payload.key);
     // case UPDATE_GROUP:
@@ -155,6 +154,6 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer,
+  rootReducer, LOAD_ACTIVITIES,
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };
