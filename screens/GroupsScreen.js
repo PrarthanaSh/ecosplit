@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Button } from "@rneui/base";
 
-import ListItem from "../components/ListItem";
+import GroupItem from "../components/GroupItem";
 
 function GroupsScreen(props) {
   
@@ -19,7 +19,7 @@ function GroupsScreen(props) {
           data={groupItems}
           renderItem={({item})=>{
             return (
-              <ListItem item={item} navigation={navigation} />
+              <GroupItem item={item} navigation={navigation} />
             );
           }}
         />

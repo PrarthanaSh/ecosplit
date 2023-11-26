@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import AddExScreen from './screens/AddExScreen';
 import GroupsScreen from './screens/GroupsScreen';
+import DetailsScreen from './screens/DetailsScreen';
 
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -74,6 +75,19 @@ function HomeSet() {
                                 return (
                                     <Icon
                                         name="groups"
+                                        color={color}
+                                        size={size}
+                                    />
+                                );
+                            }
+                        }} />
+        <Tabs.Screen name="Details"
+                        component={DetailsScreen}
+                        options={{
+                            tabBarIcon: ({ focused, color, size }) => {
+                                return (
+                                    <Icon
+                                        name="details"
                                         color={color}
                                         size={size}
                                     />

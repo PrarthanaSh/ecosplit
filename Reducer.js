@@ -2,7 +2,6 @@
 const ADD_ITEM = 'ADD_ITEM';
 const UPDATE_ITEM = 'UPDATE_ITEM';
 const DELETE_ITEM = 'DELETE_ITEM';
-const SET_NICKNAME = 'SET_NICKNAME';
 const ADD_TAG = 'ADD_TAG';
 const UPDATE_TAG = 'UPDATE_TAG';
 const DELETE_TAG = 'DELETE_TAG';
@@ -70,13 +69,6 @@ const deleteItem = (state, itemId) => {
   }
 }
 
-const setNickname = (state, newName) => {
-  return {
-    ...state, 
-    nickname: newName
-  }
-}
-
 const addTag = (state, tagName, tagColor) => {
   return {
     ...state,
@@ -129,8 +121,6 @@ function rootReducer(state=initialState, action) {
       return updateItem(state, action.payload.key, action.payload.text, action.payload.tags);
     case DELETE_ITEM:
       return deleteItem(state, action.payload.key);
-    case SET_NICKNAME:
-      return setNickname(state, action.payload.nickname);
     case ADD_TAG:
       return addTag(state, payload.tagName, payload.tagColor);
     case UPDATE_TAG:
@@ -142,4 +132,4 @@ function rootReducer(state=initialState, action) {
   }
 }
 
-export { rootReducer, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, SET_NICKNAME, ADD_TAG, UPDATE_TAG, DELETE_TAG };
+export { rootReducer, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, ADD_TAG, UPDATE_TAG, DELETE_TAG };
