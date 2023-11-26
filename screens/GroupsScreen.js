@@ -9,6 +9,7 @@ function GroupsScreen({navigation}) {
     <View style={styles.container}>
       <Text>
         Coming soon, Groups Screen!
+        New branch
       </Text>
     </View>
   );
