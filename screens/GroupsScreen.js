@@ -1,16 +1,38 @@
-import { Button } from '@rneui/themed';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { getAuthUser, signOut } from '../AuthManager';
+import { useSelector } from "react-redux";
+import { StyleSheet, View, Text, FlatList, TouchableOpacity } from "react-native";
+import { Button } from "@rneui/base";
 
+import ListItem from "../components/ListItem";
 
-function GroupsScreen({navigation}) {
-
-  return (
+function GroupsScreen(props) {
+  
+  const { navigation, route } = props;
+  const groupItems = useSelector((state) => state.groupItems);
+  
+  return(
     <View style={styles.container}>
-      <Text>
-        Coming soon, Groups Screen!
-        New branch
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Groups List</Text>
+      </View>
+      <View style={styles.listContainer}>
+        <FlatList
+          data={groupItems}
+          renderItem={({item})=>{
+            return (
+              <ListItem item={item} navigation={navigation} />
+            );
+          }}
+        />
+      </View>
+      <Button
+        title='Add'
+        onPress={()=>{
+          navigation.navigate('Details', {
+            // item: {key: -1, text: '', tags: []}
+            item: {key: -1, text: ''}
+          });
+        }}
+      />
     </View>
   );
 }
@@ -18,9 +40,34 @@ function GroupsScreen({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  header: {
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'blue'
+    flexDirection: 'row',
+    width: '100%',
+    paddingHorizontal: '10%',
+//    paddingBottom: '5%',
+    paddingTop: '25%'
+  },
+  headerText: {
+    fontSize: 32
+  },
+  listContainer: {
+    flex: 0.6,
+    width: '100%',
+    paddingLeft: '10%',
+    paddingTop: '10%'
+  },
+  menuContainer: {
+    padding: '5%'
+  },
+  menuText: {
+    fontSize: 32
   }
 });
 
