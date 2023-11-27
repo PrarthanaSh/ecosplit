@@ -123,7 +123,7 @@ function SignupBox({navigation}) {
           onPress={async () => {
             try {
               await signUp(displayName, email, password);
-              navigation.navigate("Home");
+              navigation.navigate("HomeSet");
             } catch(error) {
               Alert.alert("Sign Up Error", error.message,[{ text: "OK" }])
             }
