@@ -15,6 +15,7 @@ function AddExScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const isDisabled = !activityType;
+  // const isDisabled = false
 
   const listActivities = useSelector((state) => state.listActivities);
 
@@ -27,6 +28,7 @@ function AddExScreen({ navigation }) {
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(loadActivities());
+    console.log('Activity Type updated:', activityType)
     // dispatch(loadGroups());
   }, []);
 
@@ -50,9 +52,11 @@ function AddExScreen({ navigation }) {
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setValue(item.value);
+          onChange={(item) => {
+            setValue(item.name);
             setIsFocus(false);
+            setActivityType(item.name);
+            console.log('Dropdown Value:', item);
           }}
           renderLeftIcon={() => (
             <Icon
@@ -87,7 +91,7 @@ function AddExScreen({ navigation }) {
         <Button 
           title="Split Options"
           onPress={() => setModalVisible(true)}
-          disabled={!group}
+          disabled={!activityType}
           disabledStyle={styles.disabledButton}
           disabledTitleStyle={styles.disabledTitle}
           buttonStyle={isDisabled ? styles.buttonDisabled : styles.buttonEnabled}
@@ -97,6 +101,7 @@ function AddExScreen({ navigation }) {
         <Button
           title="Save"
           containerStyle={styles.splitOptions}
+          buttonStyle={styles.save}
           
         />
       </View>
@@ -173,23 +178,30 @@ const styles = StyleSheet.create({
     
   },
   splitOptions:{
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    borderRadius: 8,
-    width: '50%',
+    width: '85%',
     margin: "1%",
   },
   buttonEnabled: {
-    backgroundColor: 'green',
+    backgroundColor: 'mediumseagreen',
+    borderRadius: 40,
+    padding: "4%",
   },
   titleEnabled: {
     color: 'white',
   },
   disabledButton: {
-    backgroundColor: 'lightgray', 
+    backgroundColor: 'lightgray',
+    borderRadius: 40,
+    padding: "4%",
+
   },
   disabledTitle: {
     color: 'darkgray', 
+  },
+  save:{
+    backgroundColor: '#252926',
+    borderRadius: 40,
+    padding: "4%",
   },
 });
 
