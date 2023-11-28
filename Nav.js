@@ -13,6 +13,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 import { rootReducer } from './data/Reducer';
+// import { rootReducer } from './Reducer';
 
 import { Icon } from '@rneui/themed';
 
@@ -38,6 +39,7 @@ function HomeSet() {
     const store = configureStore({
         reducer: rootReducer,
     }); //We might need this later
+    // console.log("homeset initialized");
 
     return (
     <Provider store={store}>

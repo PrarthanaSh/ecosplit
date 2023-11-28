@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Dropdown } from 'react-native-element-dropdown'; // might not be compatible with expo
+// bottomsheet, overlay
 import { Icon } from '@rneui/themed';
 
 import { useSelector, useDispatch} from "react-redux";
@@ -45,7 +46,7 @@ function AddExScreen({ navigation }) {
           placeholder={!isFocus ? 'Select group' : '...'}
           searchPlaceholder="Search..."
           value={value}
-          onFocus={() => setIsFocus(true)}
+          // onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             setValue(item.value);

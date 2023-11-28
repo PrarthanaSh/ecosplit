@@ -18,6 +18,7 @@ function GroupsScreen(props) {
         <FlatList
           data={groupItems}
           renderItem={({item})=>{
+            // console.log("groupItems", item);
             return (
               <GroupItem item={item} navigation={navigation} />
             );

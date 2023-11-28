@@ -5,15 +5,57 @@
 const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
-// const ADD_GROUP = 'ADD_GROUP';
-// const DELETE_GROUP = 'DELETE_GROUP';
-// const UPDATE_GROUP = 'UPDATE_GROUP';
+const ADD_ITEM= 'ADD_ITEM';
+const DELETE_ITEM = 'DELETE_ITEM';
+const UPDATE_ITEM = 'UPDATE_ITEM';
 
 // const initGroups = [];
+
+const initGroupItems = [
+  { text: 'Family', key: Date.now() },
+  { text: 'Friends', key: Date.now() + 1},
+  { text: 'Business', key: Date.now() + 2},
+];
+
 const initActivities=[];
 const initialState = {
   listActivities: initActivities,
+  groupItems: initGroupItems,
   // groups: initGroups
+}
+
+const addItem = (state, newText) => {
+  let { groupItems } = state;
+  let newGroupItems = groupItems.concat({
+    text: newText,
+    key: Date.now() + Math.random(),
+  });
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  };
+}
+
+const updateItem = (state, itemId, newText) => {
+  let { groupItems } = state;
+  let newItem = {
+    text: newText,
+    key: itemId, 
+  };
+  let newGroupItems = groupItems.map(elem=>elem.key===itemId?newItem:elem);
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  };
+}
+
+const deleteItem = (state, itemId) => {
+  let { groupItems } = state;
+  let newGroupItems = groupItems.filter(elem=>elem.key !== itemId);
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  }
 }
 
 // const addContact = (state, contactDict, groups, key) => {
@@ -140,12 +182,13 @@ function rootReducer(state = initialState, action) {
     //   return deleteContact(state, payload.key);
     case LOAD_ACTIVITIES:
       return loadActivities(state, payload.newListActivities);
-    // case ADD_GROUP:
-    //   return addGroup(state, action.payload.groupTitle, payload.key);
-    // case UPDATE_GROUP:
-    //   return updateGroup(state, action.payload.key, action.payload.groupTitle);
-    // case DELETE_GROUP:
-    //   return deleteGroup(state, action.payload.key);
+    // group and items
+    case ADD_ITEM:
+      return addItem(state, action.payload.text);
+    case UPDATE_ITEM:
+      return updateItem(state, action.payload.key, action.payload.text);
+    case DELETE_ITEM:
+      return deleteItem(state, action.payload.key);
     //   case LOAD_GROUPS:
     //     return loadGroups(state, payload.newGroups);
     default:
@@ -154,6 +197,6 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES,
-  // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
+  rootReducer, LOAD_ACTIVITIES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM
+  // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };

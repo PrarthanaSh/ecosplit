@@ -62,7 +62,7 @@ const updateItem = (state, itemId, newText, tags) => {
 
 const deleteItem = (state, itemId) => {
   let { groupItems } = state;
-  let newListItems = groupItems.filter(elem=>elem.key !== itemId);
+  let newGroupItems = groupItems.filter(elem=>elem.key !== itemId);
   return {
     ...state, 
     groupItems: newGroupItems
@@ -111,6 +111,7 @@ const deleteTag = (state, tagId) => {
 }
 
 function rootReducer(state=initialState, action) {
+  console.log("reducer", state);
 
   const { type, payload } = action;
 
