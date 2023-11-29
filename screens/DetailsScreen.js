@@ -1,37 +1,42 @@
 import { useState } from "react";
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native";
-import { Input, Button } from '@rneui/themed';
+import { Input, Button, Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from 'react-redux';
+// import { Dropdown } from 'react-native-element-dropdown';
 
 import { ADD_ITEM, UPDATE_ITEM } from '../Reducer';
 
 function DetailsScreen (props) {
 
   const groupItems = useSelector(state=>state.groupItems);
+  const allMembers = useSelector(state=>state.members);
   const dispatch = useDispatch();
 
   const { navigation, route } = props;
   const { item } = route.params; // not working
 
   const [inputText, setInputText] = useState(item.text);
+  const [selectedMembers, setSelectedMembers] = useState(item.members);
+  // const [value, setValue] = useState(null);
+  // const [isFocus, setIsFocus] = useState(false);
 
-  const addItem = (newText, tags) => {
+  const addItem = (newText, members) => {
     dispatch({
       type: ADD_ITEM,
       payload: {
         text: newText,
-        tags: tags
+        members: members
       }
     });
   }
 
-  const updateItem = (item, newText, tags) => {
+  const updateItem = (item, newText, members) => {
     dispatch({
       type: UPDATE_ITEM,
       payload: {
         key: item.key,
         text: newText, 
-        tags: tags
+        members: members
       }
     });
 
@@ -53,79 +58,49 @@ function DetailsScreen (props) {
         />
       </View>
       <View style={{flex: 0.07, width: '80%'}}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.labelText}>Members</Text>
-            <Dropdown
-              style={[styles.dropdown, isFocus && { borderColor: '#aaf0d1' }]}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              inputSearchStyle={styles.inputSearchStyle}
-              iconStyle={styles.iconStyle}
-              data={groupItems}
-              search
-              maxHeight={300}
-              labelField="name"
-              valueField="name"
-              placeholder={!isFocus ? 'Select group' : '...'}
-              searchPlaceholder="Search..."
-              value={value}
-              // onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-              onChange={item => {
-                setValue(item.value);
-                setIsFocus(false);
-              }}
-              renderLeftIcon={() => (
-                <Icon
-                  name="money"
-                  color={isFocus ? '#aaf0d1' : 'gray'}
-                  size={20}
-                />
-              )}
-            />
-        </View>
-        {/* <FlatList
-          contentContainerStyle={styles.tagContainer}
-          data={allTags}
+        <FlatList
+          contentContainerStyle={styles.memberContainer}
+          data={allMembers}
           renderItem={({item})=>{
             return (
               <TouchableOpacity 
                 style={[
-                  styles.tagLabel, 
-                  selectedTags.includes(item.key) ? 
+                  styles.memberLabel, 
+                  selectedMembers.includes(item.key) ? 
                   {borderColor: 'black', borderWidth: 2} : 
                   {}]}
                 onPress={()=>{
-                  let newSelectedTags = [];
-                  if (selectedTags.includes(item.key)) {
-                    newSelectedTags = selectedTags.filter(elem=>elem!==item.key);
+                  let newSelectedMembers = [];
+                  if (selectedMembers.includes(item.key)) {
+                    newSelectedMembers = selectedMembers.filter(elem=>elem!==item.key);
                   } else {
-                    newSelectedTags = selectedTags.concat(item.key);
+                    newSelectedMembers = selectedMembers.concat(item.key);
                   }
-                  setSelectedTags(newSelectedTags);
+                  setSelectedMembers(newSelectedMembers);
                 }}>
-                <Text>{item.tagName}</Text>
+                <Text>{item.memberName}</Text>
               </TouchableOpacity>
             )
           }}
-        /> */}
+        />
       </View>
       <View style={styles.buttonContainer}>
         <Button
           title='Cancel'
           onPress={()=>{
-            navigation.navigate('Home');
+            navigation.navigate('Groups');
           }}
         />
         <Button
           title='Save'
           onPress={()=>{
             if (item.key === -1) {
-              addItem(inputText, selectedTags);
+              addItem(inputText, selectedMembers);
             } else {
-              updateItem(item, inputText, selectedTags);
+              updateItem(item, inputText, selectedMembers);
             }
-            navigation.goBack();
+            // navigation.goBack();
+            navigation.navigate('Groups'); // save button not saving info
           }}
         />
       </View>
@@ -156,13 +131,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '80%'
   },
-  tagContainer: {
+  // dropdown: {
+  //   height: 50,
+  //   borderColor: 'gray',
+  //   borderWidth: 0.5,
+  //   borderRadius: 8,
+  //   paddingHorizontal: 8,
+  //   width: '100%',
+  // },
+  memberContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     flexDirection: 'row',
   },
-  tagLabel: {
+  memberLabel: {
     margin: 3,
     padding: 3, 
     backgroundColor: 'lightgray',

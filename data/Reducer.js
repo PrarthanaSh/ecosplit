@@ -9,26 +9,47 @@ const ADD_ITEM= 'ADD_ITEM';
 const DELETE_ITEM = 'DELETE_ITEM';
 const UPDATE_ITEM = 'UPDATE_ITEM';
 
+// const ADD_MEMBER = 'ADD_MEMBER';
+// const UPDATE_MEMBER = 'UPDATE_MEMBER';
+// const DELETE_MEMBER = 'DELETE_MEMBER';
+
 // const initGroups = [];
 
+const colors = [
+  'rgb(113, 212, 245)', // lightblue
+  'rgb(209, 137, 132)', // red
+  'rgb(103, 168, 133)', // green
+  'rgb(171, 232, 245)', // skyblue
+  'rgb(179, 113, 245)', // purple
+  'rgb(255, 215, 0)'  // orange
+]
+
+const initMembers = [
+  { memberName: 'Jason', color: colors[0], key: Date.now() },
+  { memberName: 'Lisa', color: colors[2], key: Date.now() + 1},
+  { memberName: 'Sally', color: colors[3], key: Date.now() + 2},
+];
+
 const initGroupItems = [
-  { text: 'Family', key: Date.now() },
-  { text: 'Friends', key: Date.now() + 1},
-  { text: 'Business', key: Date.now() + 2},
+  { text: 'Family', members: [initMembers[0].key], key: Date.now() },
+  { text: 'Friends', members: [initMembers[1].key], key: Date.now() + 1},
+  { text: 'Business', members: [initMembers[2].key], key: Date.now() + 2},
 ];
 
 const initActivities=[];
 const initialState = {
   listActivities: initActivities,
   groupItems: initGroupItems,
+  members: initMembers,
   // groups: initGroups
 }
 
-const addItem = (state, newText) => {
+const addItem = (state, newText, members) => {
   let { groupItems } = state;
   let newGroupItems = groupItems.concat({
     text: newText,
     key: Date.now() + Math.random(),
+    members: members,
   });
   return {
     ...state, 
@@ -36,11 +57,12 @@ const addItem = (state, newText) => {
   };
 }
 
-const updateItem = (state, itemId, newText) => {
+const updateItem = (state, itemId, newText, members) => {
   let { groupItems } = state;
   let newItem = {
     text: newText,
     key: itemId, 
+    members: members,
   };
   let newGroupItems = groupItems.map(elem=>elem.key===itemId?newItem:elem);
   return {
@@ -57,6 +79,45 @@ const deleteItem = (state, itemId) => {
     groupItems: newGroupItems
   }
 }
+
+// const addMember = (state, memberName, memberColor) => {
+//   return {
+//     ...state,
+//     members: state.members.concat({
+//       memberName: memberName,
+//       color: memberColor,
+//       key: Date.now()
+//     })
+//   }
+// }
+
+// const updateMember = (state, memberId, memberName, memberColor) => {
+//   let nwTag = {
+//     memberName: memberName,
+//     color: memberColor,
+//     key: memberId
+//   }
+//   let newMembers = state.members.map(elm => elm.key===memberId ? nwTag : elm);
+//   return {
+//     ...state,
+//     members: newMembers
+//   }  
+// }
+
+// const deleteMember = (state, memberId) => {
+//   let newListItems = [];
+//   state.listItems.forEach(elem=>{
+//     let newElem = {...elem};
+//     newElem.members = elem.members.filter(memberKey=>memberKey!==memberId);
+//     newListItems.push(newElem);
+//   });
+//   return {
+//     ...state,
+//     listItems: newListItems,
+//     members: state.members.filter(elem=>elem.key!==memberId)
+//   }
+  
+// }
 
 // const addContact = (state, contactDict, groups, key) => {
 //   let { listContacts } = state;
@@ -183,11 +244,17 @@ function rootReducer(state = initialState, action) {
       return loadActivities(state, payload.newListActivities);
     // group and items
     case ADD_ITEM:
-      return addItem(state, action.payload.text);
+      return addItem(state, action.payload.text, action.payload.members);
     case UPDATE_ITEM:
-      return updateItem(state, action.payload.key, action.payload.text);
+      return updateItem(state, action.payload.key, action.payload.text, action.payload.members);
     case DELETE_ITEM:
       return deleteItem(state, action.payload.key);
+    // case ADD_MEMBER:
+    //   return addMember(state, action.payload.text);
+    // case UPDATE_MEMBER:
+    //   return updateMember(state, action.payload.key, action.payload.text);
+    // case DELETE_MEMBER:
+    //   return deleteMember(state, action.payload.key);
     case LOAD_GROUPS:
       return loadGroups(state, payload.newGroups);
     default:
@@ -197,5 +264,6 @@ function rootReducer(state = initialState, action) {
 
 export {
   rootReducer, LOAD_ACTIVITIES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, LOAD_GROUPS
+  // ADD_MEMBER, UPDATE_MEMBER, DELETE_MEMBER
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };

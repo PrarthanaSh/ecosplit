@@ -46,7 +46,7 @@ function AddExScreen({ navigation }) {
           placeholder={!isFocus ? 'Select group' : '...'}
           searchPlaceholder="Search..."
           value={value}
-          // onFocus={() => setIsFocus(true)}
+          onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
             setValue(item.value);
