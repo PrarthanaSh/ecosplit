@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { Icon } from '@rneui/themed';
-
+import { Icon, Button } from '@rneui/themed';
+import SplitOptionsOverlay from "../components/splitOptions";
 import { useSelector, useDispatch} from "react-redux";
 import { loadActivities } from "../data/Actions";
 
@@ -12,6 +12,10 @@ function AddExScreen({ navigation }) {
   const [activityType, setActivityType] = useState('');
   const [expense, setExpense] = useState('');
   const [group, setGroup] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const isDisabled = !activityType;
+  // const isDisabled = false
 
   const listActivities = useSelector((state) => state.listActivities);
 
@@ -24,6 +28,7 @@ function AddExScreen({ navigation }) {
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(loadActivities());
+    console.log('Activity Type updated:', activityType)
     // dispatch(loadGroups());
   }, []);
 
@@ -47,9 +52,11 @@ function AddExScreen({ navigation }) {
           value={value}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setValue(item.value);
+          onChange={(item) => {
+            setValue(item.name);
             setIsFocus(false);
+            setActivityType(item.name);
+            console.log('Dropdown Value:', item);
           }}
           renderLeftIcon={() => (
             <Icon
@@ -80,6 +87,32 @@ function AddExScreen({ navigation }) {
           placeholder='Group Name'
         />
       </View>
+      <View style={styles.buttonContainer}>
+        <Button 
+          title="Split Options"
+          onPress={() => setModalVisible(true)}
+          disabled={!activityType}
+          disabledStyle={styles.disabledButton}
+          disabledTitleStyle={styles.disabledTitle}
+          buttonStyle={isDisabled ? styles.buttonDisabled : styles.buttonEnabled}
+          titleStyle={isDisabled ? styles.titleDisabled : styles.titleEnabled}
+          containerStyle={styles.splitOptions}
+        />
+        <Button
+          title="Save"
+          containerStyle={styles.splitOptions}
+          buttonStyle={styles.save}
+          
+        />
+      </View>
+      
+
+      <SplitOptionsOverlay
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        selectedGroup={group}
+        selectedActivityType={activityType}
+      />
     </View>
   );
 }
@@ -136,6 +169,39 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  buttonContainer:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: "10%",
+    
+  },
+  splitOptions:{
+    width: '85%',
+    margin: "1%",
+  },
+  buttonEnabled: {
+    backgroundColor: 'mediumseagreen',
+    borderRadius: 40,
+    padding: "4%",
+  },
+  titleEnabled: {
+    color: 'white',
+  },
+  disabledButton: {
+    backgroundColor: 'lightgray',
+    borderRadius: 40,
+    padding: "4%",
+
+  },
+  disabledTitle: {
+    color: 'darkgray', 
+  },
+  save:{
+    backgroundColor: '#252926',
+    borderRadius: 40,
+    padding: "4%",
   },
 });
 
