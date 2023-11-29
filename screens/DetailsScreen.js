@@ -8,14 +8,12 @@ import { ADD_ITEM, UPDATE_ITEM } from '../Reducer';
 function DetailsScreen (props) {
 
   const groupItems = useSelector(state=>state.groupItems);
-  const allTags = useSelector(state=>state.tags);
   const dispatch = useDispatch();
 
   const { navigation, route } = props;
   const { item } = route.params; // not working
 
   const [inputText, setInputText] = useState(item.text);
-  const [selectedTags, setSelectedTags] = useState(item.tags);
 
   const addItem = (newText, tags) => {
     dispatch({
@@ -55,7 +53,38 @@ function DetailsScreen (props) {
         />
       </View>
       <View style={{flex: 0.07, width: '80%'}}>
-        <FlatList
+        <View style={styles.inputContainer}>
+          <Text style={styles.labelText}>Members</Text>
+            <Dropdown
+              style={[styles.dropdown, isFocus && { borderColor: '#aaf0d1' }]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={groupItems}
+              search
+              maxHeight={300}
+              labelField="name"
+              valueField="name"
+              placeholder={!isFocus ? 'Select group' : '...'}
+              searchPlaceholder="Search..."
+              value={value}
+              // onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={item => {
+                setValue(item.value);
+                setIsFocus(false);
+              }}
+              renderLeftIcon={() => (
+                <Icon
+                  name="money"
+                  color={isFocus ? '#aaf0d1' : 'gray'}
+                  size={20}
+                />
+              )}
+            />
+        </View>
+        {/* <FlatList
           contentContainerStyle={styles.tagContainer}
           data={allTags}
           renderItem={({item})=>{
@@ -79,7 +108,7 @@ function DetailsScreen (props) {
               </TouchableOpacity>
             )
           }}
-        />
+        /> */}
       </View>
       <View style={styles.buttonContainer}>
         <Button

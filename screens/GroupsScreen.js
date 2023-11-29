@@ -1,13 +1,22 @@
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Button } from "@rneui/base";
 
 import GroupItem from "../components/GroupItem";
+import { loadGroups } from "../data/Actions";
+
 
 function GroupsScreen(props) {
   
   const { navigation, route } = props;
   const groupItems = useSelector((state) => state.groupItems);
+
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(loadGroups());
+    // dispatch(loadGroups());
+  }, []);
   
   return(
     <View style={styles.container}>
