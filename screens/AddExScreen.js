@@ -99,6 +99,8 @@ function AddExScreen({ navigation }) {
           )}
         />
       </View>
+
+      
       
 
       <View style={styles.inputContainer}>
