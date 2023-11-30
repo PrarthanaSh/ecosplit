@@ -6,7 +6,7 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import { LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
+import {LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
 // import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
 
 
@@ -115,29 +115,49 @@ const loadActivities = () => {
     }
   }
 
-const loadGroups = () => {
-  return async (dispatch) => {
-    let querySnapshot = await getDocs(collection(db, 'groups'));
-    let newGroups = querySnapshot.docs.map(docSnap => {
-      return {
-        ...docSnap.data(),
-        key: docSnap.id
+  const loadGroups = () => {
+    return async (dispatch) => {
+      let querySnapshot = await getDocs(collection(db, 'groups'));
+      let newListGroups = querySnapshot.docs.map(docSnap => {
+        return {
+          ...docSnap.data(),
+          key: docSnap.id
+        }
       }
-    }
-    )
+      )
+      console.log("In Actions .. Load Groups");
+      console.log(newListGroups);
 
-    console.log(newGroups);
-    
-    dispatch({
-      type: LOAD_GROUPS,
-      payload: {
-          newGroups: newGroups,
+      dispatch({
+        type: LOAD_GROUPS,
+        payload: {
+          newListGroups: newListGroups,
+        }
       }
+      );
     }
-    );
   }
-}
-  
-export { loadActivities, loadGroups }
+
+//   const loadGroups = () => {
+//     return async (dispatch) => {
+//       let querySnapshot = await getDocs(collection(db, 'ErrorHere'));
+//       let newGroups = querySnapshot.docs.map(docSnap => {
+//         return {
+//           ...docSnap.data(),
+//           key: docSnap.id
+//         }
+//       }
+//       )
+//       dispatch({
+//         type: LOAD_GROUPS,
+//         payload: {
+//             newGroups: newGroups,
+//         }
+//       }
+//       );
+//     }
+//   }
+
+export {loadActivities, loadGroups}
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }

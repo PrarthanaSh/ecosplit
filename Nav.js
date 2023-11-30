@@ -22,27 +22,26 @@ function NavSkeleton() {
     //     reducer: rootReducer,
     // });
     const Stack = createNativeStackNavigator();
+    const store = configureStore({
+        reducer: rootReducer,
+    }); //We might need this later
 
     return (
+        <Provider store={store}>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName='Login' 
+            <Stack.Navigator initialRouteName='Login'
               screenOptions={{ headerShown: false }}>
               <Stack.Screen name='Login' component={LoginScreen}/>
               <Stack.Screen name='HomeSet' component={HomeSet}/>
             </Stack.Navigator>
-          </NavigationContainer> 
+          </NavigationContainer>
+        </Provider>
     );
 }
 
 function HomeSet() {
     const Tabs = createBottomTabNavigator();
-    const store = configureStore({
-        reducer: rootReducer,
-    }); //We might need this later
-    // console.log("homeset initialized");
-
     return (
-    <Provider store={store}>
       <Tabs.Navigator>
         <Tabs.Screen name="Home"
                         component={HomeScreen}
@@ -97,7 +96,6 @@ function HomeSet() {
                             }
                         }} />
       </Tabs.Navigator>
-       </Provider> //We might need this later
     );
   }
 export default NavSkeleton;

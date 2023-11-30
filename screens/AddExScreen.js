@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown'; // might not be compatible with expo
-// bottomsheet, overlay
-import { Icon } from '@rneui/themed';
-
+import { Dropdown } from 'react-native-element-dropdown';
+import { Icon, Button } from '@rneui/themed';
+import SplitOptionsOverlay from "../components/splitOptions";
 import { useSelector, useDispatch} from "react-redux";
-import { loadActivities } from "../data/Actions";
+import { loadActivities, loadGroups } from "../data/Actions";
 
 
 function AddExScreen({ navigation }) {
@@ -13,19 +12,25 @@ function AddExScreen({ navigation }) {
   const [activityType, setActivityType] = useState('');
   const [expense, setExpense] = useState('');
   const [group, setGroup] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const isDisabled = !activityType;
+  // const isDisabled = false
 
   const listActivities = useSelector((state) => state.listActivities);
+  const listGroups = useSelector((state)=> state.listGroups);
 
 
 // Dropdown component state variables
-  const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
+  const [isAcFocus, setIsAcFocus] = useState(false);
+  const [isGrFocus, setIsGrFocus] = useState(false);
 
 
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(loadActivities());
-    // dispatch(loadGroups());
+    console.log('Activity Type updated:', activityType)
+    dispatch(loadGroups());
   }, []);
 
   return (
@@ -33,7 +38,7 @@ function AddExScreen({ navigation }) {
       <View style={styles.inputContainer}>
       <Text style={styles.labelText}>Expense Title</Text>
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: '#aaf0d1' }]}
+          style={[styles.dropdown, isAcFocus && { borderColor: '#aaf0d1' }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -43,24 +48,58 @@ function AddExScreen({ navigation }) {
           maxHeight={300}
           labelField="name"
           valueField="name"
-          placeholder={!isFocus ? 'Select group' : '...'}
+          placeholder={!isAcFocus ? 'Select activity' : '...'}
           searchPlaceholder="Search..."
-          value={value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setValue(item.value);
-            setIsFocus(false);
+          value={activityType}
+          onFocus={() => setIsAcFocus(true)}
+          onBlur={() => setIsAcFocus(false)}
+          onChange={(item) => {
+            setIsAcFocus(false);
+            setActivityType(item.name);
+            console.log('Dropdown Value:', item);
           }}
           renderLeftIcon={() => (
             <Icon
               name="money"
-              color={isFocus ? '#aaf0d1' : 'gray'}
+              color={isAcFocus ? '#aaf0d1' : 'gray'}
               size={20}
             />
           )}
         />
       </View>
+      <View style={styles.inputContainer}>
+      <Text style={styles.labelText}>Group Name</Text>
+        <Dropdown
+          style={[styles.dropdown, isGrFocus && { borderColor: '#aaf0d1' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={listGroups}
+          search
+          maxHeight={300}
+          labelField="groupName"
+          valueField="groupName"
+          placeholder={!isGrFocus ? 'Select group' : '...'}
+          searchPlaceholder="Search..."
+          value={group}
+          onFocus={() => setIsGrFocus(true)}
+          onBlur={() => setIsGrFocus(false)}
+          onChange={(item) => {
+            setIsGrFocus(false);
+            setGroup(item.groupName);
+            console.log('Dropdown Value:', item);
+          }}
+          renderLeftIcon={() => (
+            <Icon
+              name="money"
+              color={isGrFocus ? '#aaf0d1' : 'gray'}
+              size={20}
+            />
+          )}
+        />
+      </View>
+      
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelText}>Expense Amount</Text>
@@ -72,15 +111,32 @@ function AddExScreen({ navigation }) {
         />
       </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Group</Text>
-        <TextInput
-          style={styles.inputBox}
-          value={group}
-          onChangeText={(text) => setGroup(text)}
-          placeholder='Group Name'
+      <View style={styles.buttonContainer}>
+        <Button 
+          title="Split Options"
+          onPress={() => setModalVisible(true)}
+          disabled={!activityType}
+          disabledStyle={styles.disabledButton}
+          disabledTitleStyle={styles.disabledTitle}
+          buttonStyle={isDisabled ? styles.buttonDisabled : styles.buttonEnabled}
+          titleStyle={isDisabled ? styles.titleDisabled : styles.titleEnabled}
+          containerStyle={styles.splitOptions}
+        />
+        <Button
+          title="Save"
+          containerStyle={styles.splitOptions}
+          buttonStyle={styles.save}
+          
         />
       </View>
+      
+
+      <SplitOptionsOverlay
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        selectedGroup={group}
+        selectedActivityType={activityType}
+      />
     </View>
   );
 }
@@ -137,6 +193,39 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  buttonContainer:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: "10%",
+    
+  },
+  splitOptions:{
+    width: '85%',
+    margin: "1%",
+  },
+  buttonEnabled: {
+    backgroundColor: 'mediumseagreen',
+    borderRadius: 40,
+    padding: "4%",
+  },
+  titleEnabled: {
+    color: 'white',
+  },
+  disabledButton: {
+    backgroundColor: 'lightgray',
+    borderRadius: 40,
+    padding: "4%",
+
+  },
+  disabledTitle: {
+    color: 'darkgray', 
+  },
+  save:{
+    backgroundColor: '#252926',
+    borderRadius: 40,
+    padding: "4%",
   },
 });
 

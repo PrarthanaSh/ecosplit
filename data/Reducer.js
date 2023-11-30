@@ -4,6 +4,7 @@
 
 const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
+// const LOAD_GROUPS = 'LOAD_GROUPS';
 
 const ADD_ITEM= 'ADD_ITEM';
 const DELETE_ITEM = 'DELETE_ITEM';
@@ -13,35 +14,11 @@ const UPDATE_ITEM = 'UPDATE_ITEM';
 // const UPDATE_MEMBER = 'UPDATE_MEMBER';
 // const DELETE_MEMBER = 'DELETE_MEMBER';
 
-// const initGroups = [];
-
-const colors = [
-  'rgb(113, 212, 245)', // lightblue
-  'rgb(209, 137, 132)', // red
-  'rgb(103, 168, 133)', // green
-  'rgb(171, 232, 245)', // skyblue
-  'rgb(179, 113, 245)', // purple
-  'rgb(255, 215, 0)'  // orange
-]
-
-const initMembers = [
-  { memberName: 'Jason', color: colors[0], key: Date.now() },
-  { memberName: 'Lisa', color: colors[2], key: Date.now() + 1},
-  { memberName: 'Sally', color: colors[3], key: Date.now() + 2},
-];
-
-const initGroupItems = [
-  { text: 'Family', members: [initMembers[0].key], key: Date.now() },
-  { text: 'Friends', members: [initMembers[1].key], key: Date.now() + 1},
-  { text: 'Business', members: [initMembers[2].key], key: Date.now() + 2},
-];
-
+const initGroups = [];
 const initActivities=[];
 const initialState = {
   listActivities: initActivities,
-  groupItems: initGroupItems,
-  members: initMembers,
-  // groups: initGroups
+  listGroups: initGroups,
 }
 
 const addItem = (state, newText, members) => {
@@ -183,9 +160,17 @@ const loadActivities = (state, activities) => {
 const loadGroups = (state, groups) => {
   return {
     ...state,
-    groups: [...groups]
+    listGroups: [...groups]
   }
 }
+
+// const loadGroups = (state, groups) => {
+
+//   return {
+//     ...state,
+//     groups: [...groups]
+//   }
+// }
 
 // const deleteGroup = (state, groupId) => {
 //   let { listContacts } = state;
@@ -242,28 +227,22 @@ function rootReducer(state = initialState, action) {
     //   return deleteContact(state, payload.key);
     case LOAD_ACTIVITIES:
       return loadActivities(state, payload.newListActivities);
-    // group and items
-    case ADD_ITEM:
-      return addItem(state, action.payload.text, action.payload.members);
-    case UPDATE_ITEM:
-      return updateItem(state, action.payload.key, action.payload.text, action.payload.members);
-    case DELETE_ITEM:
-      return deleteItem(state, action.payload.key);
-    // case ADD_MEMBER:
-    //   return addMember(state, action.payload.text);
-    // case UPDATE_MEMBER:
-    //   return updateMember(state, action.payload.key, action.payload.text);
-    // case DELETE_MEMBER:
-    //   return deleteMember(state, action.payload.key);
-    case LOAD_GROUPS:
-      return loadGroups(state, payload.newGroups);
+      case LOAD_GROUPS:
+      return loadGroups(state, payload.newListGroups);
+    // case ADD_GROUP:
+    //   return addGroup(state, action.payload.groupTitle, payload.key);
+    // case UPDATE_GROUP:
+    //   return updateGroup(state, action.payload.key, action.payload.groupTitle);
+    // case DELETE_GROUP:
+    //   return deleteGroup(state, action.payload.key);
+    //   case LOAD_GROUPS:
+    //     return loadGroups(state, payload.newGroups);
     default:
       return state;
   }
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES, ADD_ITEM, UPDATE_ITEM, DELETE_ITEM, LOAD_GROUPS
-  // ADD_MEMBER, UPDATE_MEMBER, DELETE_MEMBER
-  // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS
+  // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };

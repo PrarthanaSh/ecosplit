@@ -1,9 +1,10 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import { Button } from '@rneui/themed';
 
-import { signIn, signUp } from '../AuthManager';
+import { signIn, signUp, subscribeToAuthChanges } from '../AuthManager';
+import { useDispatch } from 'react-redux';
 
 function SigninBox({navigation}) {
 
@@ -123,7 +124,7 @@ function SignupBox({navigation}) {
           onPress={async () => {
             try {
               await signUp(displayName, email, password);
-              navigation.navigate("Home");
+              navigation.navigate("HomeSet");
             } catch(error) {
               Alert.alert("Sign Up Error", error.message,[{ text: "OK" }])
             }
@@ -139,6 +140,11 @@ function SignupBox({navigation}) {
 function LoginScreen({navigation}) {
 
   const [loginMode, setLoginMode] = useState(true);
+  const dispatch = useDispatch()
+  
+  useEffect(()=> {
+    subscribeToAuthChanges(navigation);
+  }, []);
 
   return (
     <View style={styles.container}>
