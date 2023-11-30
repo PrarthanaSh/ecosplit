@@ -3,17 +3,18 @@
 // const DELETE_CONTACT = 'DELETE_CONTACT';
 
 const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
+const LOAD_GROUPS = 'LOAD_GROUPS';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
 // const ADD_GROUP = 'ADD_GROUP';
 // const DELETE_GROUP = 'DELETE_GROUP';
 // const UPDATE_GROUP = 'UPDATE_GROUP';
 
-// const initGroups = [];
+const initGroups = [];
 const initActivities=[];
 const initialState = {
   listActivities: initActivities,
-  // groups: initGroups
+  listGroups: initGroups,
 }
 
 // const addContact = (state, contactDict, groups, key) => {
@@ -74,6 +75,13 @@ const loadActivities = (state, activities) => {
   return {
     ...state,
     listActivities: [...activities]
+  }
+}
+
+const loadGroups = (state, groups) => {
+  return {
+    ...state,
+    listGroups: [...groups]
   }
 }
 
@@ -140,6 +148,8 @@ function rootReducer(state = initialState, action) {
     //   return deleteContact(state, payload.key);
     case LOAD_ACTIVITIES:
       return loadActivities(state, payload.newListActivities);
+      case LOAD_GROUPS:
+      return loadGroups(state, payload.newListGroups);
     // case ADD_GROUP:
     //   return addGroup(state, action.payload.groupTitle, payload.key);
     // case UPDATE_GROUP:
@@ -154,6 +164,6 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES,
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };

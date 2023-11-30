@@ -4,7 +4,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Icon, Button } from '@rneui/themed';
 import SplitOptionsOverlay from "../components/splitOptions";
 import { useSelector, useDispatch} from "react-redux";
-import { loadActivities } from "../data/Actions";
+import { loadActivities, loadGroups } from "../data/Actions";
 
 
 function AddExScreen({ navigation }) {
@@ -18,18 +18,19 @@ function AddExScreen({ navigation }) {
   // const isDisabled = false
 
   const listActivities = useSelector((state) => state.listActivities);
+  const listGroups = useSelector((state)=> state.listGroups);
 
 
 // Dropdown component state variables
-  const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
+  const [isAcFocus, setIsAcFocus] = useState(false);
+  const [isGrFocus, setIsGrFocus] = useState(false);
 
 
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(loadActivities());
     console.log('Activity Type updated:', activityType)
-    // dispatch(loadGroups());
+    dispatch(loadGroups());
   }, []);
 
   return (
@@ -37,7 +38,7 @@ function AddExScreen({ navigation }) {
       <View style={styles.inputContainer}>
       <Text style={styles.labelText}>Expense Title</Text>
         <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: '#aaf0d1' }]}
+          style={[styles.dropdown, isAcFocus && { borderColor: '#aaf0d1' }]}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
@@ -47,26 +48,58 @@ function AddExScreen({ navigation }) {
           maxHeight={300}
           labelField="name"
           valueField="name"
-          placeholder={!isFocus ? 'Select group' : '...'}
+          placeholder={!isAcFocus ? 'Select activity' : '...'}
           searchPlaceholder="Search..."
-          value={value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
+          value={activityType}
+          onFocus={() => setIsAcFocus(true)}
+          onBlur={() => setIsAcFocus(false)}
           onChange={(item) => {
-            setValue(item.name);
-            setIsFocus(false);
+            setIsAcFocus(false);
             setActivityType(item.name);
             console.log('Dropdown Value:', item);
           }}
           renderLeftIcon={() => (
             <Icon
               name="money"
-              color={isFocus ? '#aaf0d1' : 'gray'}
+              color={isAcFocus ? '#aaf0d1' : 'gray'}
               size={20}
             />
           )}
         />
       </View>
+      <View style={styles.inputContainer}>
+      <Text style={styles.labelText}>Group Name</Text>
+        <Dropdown
+          style={[styles.dropdown, isGrFocus && { borderColor: '#aaf0d1' }]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          data={listGroups}
+          search
+          maxHeight={300}
+          labelField="groupName"
+          valueField="groupName"
+          placeholder={!isGrFocus ? 'Select group' : '...'}
+          searchPlaceholder="Search..."
+          value={group}
+          onFocus={() => setIsGrFocus(true)}
+          onBlur={() => setIsGrFocus(false)}
+          onChange={(item) => {
+            setIsGrFocus(false);
+            setGroup(item.groupName);
+            console.log('Dropdown Value:', item);
+          }}
+          renderLeftIcon={() => (
+            <Icon
+              name="money"
+              color={isGrFocus ? '#aaf0d1' : 'gray'}
+              size={20}
+            />
+          )}
+        />
+      </View>
+      
 
       <View style={styles.inputContainer}>
         <Text style={styles.labelText}>Expense Amount</Text>
@@ -78,15 +111,6 @@ function AddExScreen({ navigation }) {
         />
       </View>
 
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Group</Text>
-        <TextInput
-          style={styles.inputBox}
-          value={group}
-          onChangeText={(text) => setGroup(text)}
-          placeholder='Group Name'
-        />
-      </View>
       <View style={styles.buttonContainer}>
         <Button 
           title="Split Options"

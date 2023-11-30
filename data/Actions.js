@@ -6,7 +6,7 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import {LOAD_ACTIVITIES } from "./Reducer";
+import {LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
 // import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
 
 
@@ -114,6 +114,29 @@ const loadActivities = () => {
     }
   }
 
+  const loadGroups = () => {
+    return async (dispatch) => {
+      let querySnapshot = await getDocs(collection(db, 'groups'));
+      let newListGroups = querySnapshot.docs.map(docSnap => {
+        return {
+          ...docSnap.data(),
+          key: docSnap.id
+        }
+      }
+      )
+      console.log("In Actions .. Load Groups");
+      console.log(newListGroups);
+
+      dispatch({
+        type: LOAD_GROUPS,
+        payload: {
+          newListGroups: newListGroups,
+        }
+      }
+      );
+    }
+  }
+
 //   const loadGroups = () => {
 //     return async (dispatch) => {
 //       let querySnapshot = await getDocs(collection(db, 'ErrorHere'));
@@ -134,6 +157,6 @@ const loadActivities = () => {
 //     }
 //   }
   
-export {loadActivities}
+export {loadActivities, loadGroups}
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }
