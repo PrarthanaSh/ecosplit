@@ -1,46 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Input, Button, Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from 'react-redux';
 // import { Dropdown } from 'react-native-element-dropdown';
 
-import { ADD_ITEM, UPDATE_ITEM } from '../Reducer';
+import { loadUsers } from "../data/Actions";
 
-function DetailsScreen (props) {
+function DetailsScreen(props) {
 
-  const groupItems = useSelector(state=>state.groupItems);
-  const allMembers = useSelector(state=>state.members);
-  const dispatch = useDispatch();
+  const groupItems = useSelector(state => state.listGroups);
+  const allMembers = useSelector(state => state.listUsers);
 
   const { navigation, route } = props;
   const { item } = route.params; // not working
 
   const [inputText, setInputText] = useState(item.text);
   const [selectedMembers, setSelectedMembers] = useState(item.members);
-  // const [value, setValue] = useState(null);
-  // const [isFocus, setIsFocus] = useState(false);
 
-  const addItem = (newText, members) => {
-    dispatch({
-      type: ADD_ITEM,
-      payload: {
-        text: newText,
-        members: members
-      }
-    });
-  }
-
-  const updateItem = (item, newText, members) => {
-    dispatch({
-      type: UPDATE_ITEM,
-      payload: {
-        key: item.key,
-        text: newText, 
-        members: members
-      }
-    });
-
-  }
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,32 +33,32 @@ function DetailsScreen (props) {
         <Input
           placeholder='New Group'
           value={inputText}
-          onChangeText={(text)=>setInputText(text)}
+          onChangeText={(text) => setInputText(text)}
           style={styles.inputStyle}
         />
       </View>
-      <View style={{flex: 0.07, width: '80%'}}>
+      <View style={{ width: '80%' }}>
         <FlatList
           contentContainerStyle={styles.memberContainer}
           data={allMembers}
-          renderItem={({item})=>{
+          renderItem={({ item }) => {
             return (
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[
-                  styles.memberLabel, 
-                  selectedMembers.includes(item.key) ? 
-                  {borderColor: 'black', borderWidth: 2} : 
-                  {}]}
-                onPress={()=>{
+                  styles.memberLabel,
+                  selectedMembers.includes(item.key) ?
+                    { borderColor: 'black', borderWidth: 2 } :
+                    {}]}
+                onPress={() => {
                   let newSelectedMembers = [];
                   if (selectedMembers.includes(item.key)) {
-                    newSelectedMembers = selectedMembers.filter(elem=>elem!==item.key);
+                    newSelectedMembers = selectedMembers.filter(elem => elem !== item.key);
                   } else {
                     newSelectedMembers = selectedMembers.concat(item.key);
                   }
                   setSelectedMembers(newSelectedMembers);
                 }}>
-                <Text>{item.memberName}</Text>
+                <Text>{item.displayName}</Text>
               </TouchableOpacity>
             )
           }}
@@ -87,19 +67,18 @@ function DetailsScreen (props) {
       <View style={styles.buttonContainer}>
         <Button
           title='Cancel'
-          onPress={()=>{
+          onPress={() => {
             navigation.navigate('Groups');
           }}
         />
         <Button
           title='Save'
-          onPress={()=>{
+          onPress={() => {
             if (item.key === -1) {
-              addItem(inputText, selectedMembers);
+              // addItem(inputText, selectedMembers);
             } else {
-              updateItem(item, inputText, selectedMembers);
+              // updateItem(item, inputText, selectedMembers);
             }
-            // navigation.goBack();
             navigation.navigate('Groups'); // save button not saving info
           }}
         />
@@ -115,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingTop: '20%'
-  }, 
+  },
   header: {
     flex: 0.1,
     justifyContent: 'flex-end',
@@ -143,11 +122,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   memberLabel: {
     margin: 3,
-    padding: 3, 
+    padding: 3,
     backgroundColor: 'lightgray',
     borderRadius: 6,
     borderWidth: 0

@@ -4,58 +4,61 @@
 
 const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
+const LOAD_USERS = 'LOAD_USERS';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
-const ADD_ITEM= 'ADD_ITEM';
-const DELETE_ITEM = 'DELETE_ITEM';
-const UPDATE_ITEM = 'UPDATE_ITEM';
+// const ADD_ITEM= 'ADD_ITEM';
+// const DELETE_ITEM = 'DELETE_ITEM';
+// const UPDATE_ITEM = 'UPDATE_ITEM';
 
 // const ADD_MEMBER = 'ADD_MEMBER';
 // const UPDATE_MEMBER = 'UPDATE_MEMBER';
 // const DELETE_MEMBER = 'DELETE_MEMBER';
 
 const initGroups = [];
-const initActivities=[];
+const initActivities = [];
+const initUsers = [];
 const initialState = {
   listActivities: initActivities,
   listGroups: initGroups,
+  listUsers: initUsers,
 }
 
-const addItem = (state, newText, members) => {
-  let { groupItems } = state;
-  let newGroupItems = groupItems.concat({
-    text: newText,
-    key: Date.now() + Math.random(),
-    members: members,
-  });
-  return {
-    ...state, 
-    groupItems: newGroupItems
-  };
-}
+// const addItem = (state, newText, members) => {
+//   let { groupItems } = state;
+//   let newGroupItems = groupItems.concat({
+//     text: newText,
+//     key: Date.now() + Math.random(),
+//     members: members,
+//   });
+//   return {
+//     ...state, 
+//     groupItems: newGroupItems
+//   };
+// }
 
-const updateItem = (state, itemId, newText, members) => {
-  let { groupItems } = state;
-  let newItem = {
-    text: newText,
-    key: itemId, 
-    members: members,
-  };
-  let newGroupItems = groupItems.map(elem=>elem.key===itemId?newItem:elem);
-  return {
-    ...state, 
-    groupItems: newGroupItems
-  };
-}
+// const updateItem = (state, itemId, newText, members) => {
+//   let { groupItems } = state;
+//   let newItem = {
+//     text: newText,
+//     key: itemId, 
+//     members: members,
+//   };
+//   let newGroupItems = groupItems.map(elem=>elem.key===itemId?newItem:elem);
+//   return {
+//     ...state, 
+//     groupItems: newGroupItems
+//   };
+// }
 
-const deleteItem = (state, itemId) => {
-  let { groupItems } = state;
-  let newGroupItems = groupItems.filter(elem=>elem.key !== itemId);
-  return {
-    ...state, 
-    groupItems: newGroupItems
-  }
-}
+// const deleteItem = (state, itemId) => {
+//   let { groupItems } = state;
+//   let newGroupItems = groupItems.filter(elem=>elem.key !== itemId);
+//   return {
+//     ...state, 
+//     groupItems: newGroupItems
+//   }
+// }
 
 // const addMember = (state, memberName, memberColor) => {
 //   return {
@@ -93,7 +96,7 @@ const deleteItem = (state, itemId) => {
 //     listItems: newListItems,
 //     members: state.members.filter(elem=>elem.key!==memberId)
 //   }
-  
+
 // }
 
 // const addContact = (state, contactDict, groups, key) => {
@@ -164,6 +167,12 @@ const loadGroups = (state, groups) => {
   }
 }
 
+const loadUsers = (state, users) => {
+  return {
+    ...state,
+    listUsers: [...users]
+  }
+}
 // const loadGroups = (state, groups) => {
 
 //   return {
@@ -216,7 +225,7 @@ const loadGroups = (state, groups) => {
 
 
 function rootReducer(state = initialState, action) {
-  
+
   const { type, payload } = action;
   switch (type) {
     // case ADD_CONTACT:
@@ -227,8 +236,10 @@ function rootReducer(state = initialState, action) {
     //   return deleteContact(state, payload.key);
     case LOAD_ACTIVITIES:
       return loadActivities(state, payload.newListActivities);
-      case LOAD_GROUPS:
+    case LOAD_GROUPS:
       return loadGroups(state, payload.newListGroups);
+    case LOAD_USERS:
+      return loadUsers(state, payload.newListUsers);
     // case ADD_GROUP:
     //   return addGroup(state, action.payload.groupTitle, payload.key);
     // case UPDATE_GROUP:
@@ -243,6 +254,6 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };
