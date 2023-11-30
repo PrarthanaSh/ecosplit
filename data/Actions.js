@@ -6,7 +6,7 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import {LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS } from "./Reducer";
 // import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
 
 
@@ -93,50 +93,73 @@ import {LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
 // }
 
 const loadActivities = () => {
-    return async (dispatch) => {
-      let querySnapshot = await getDocs(collection(db, 'activityType'));
-      let newListActivities = querySnapshot.docs.map(docSnap => {
-        return {
-          ...docSnap.data(),
-          key: docSnap.id
-        }
+  return async (dispatch) => {
+    let querySnapshot = await getDocs(collection(db, 'activityType'));
+    let newListActivities = querySnapshot.docs.map(docSnap => {
+      return {
+        ...docSnap.data(),
+        key: docSnap.id
       }
-      )
-      console.log("In Actions .. Load Activities");
-      console.log(newListActivities);
-
-      dispatch({
-        type: LOAD_ACTIVITIES,
-        payload: {
-            newListActivities: newListActivities,
-        }
-      }
-      );
     }
-  }
+    )
+    console.log("In Actions .. Load Activities");
+    console.log(newListActivities);
 
-  const loadGroups = () => {
-    return async (dispatch) => {
-      let querySnapshot = await getDocs(collection(db, 'groups'));
-      let newListGroups = querySnapshot.docs.map(docSnap => {
-        return {
-          ...docSnap.data(),
-          key: docSnap.id
-        }
+    dispatch({
+      type: LOAD_ACTIVITIES,
+      payload: {
+        newListActivities: newListActivities,
       }
-      )
-      console.log("In Actions .. Load Groups");
-      console.log(newListGroups);
-
-      dispatch({
-        type: LOAD_GROUPS,
-        payload: {
-          newListGroups: newListGroups,
-        }
-      }
-      );
     }
+    );
   }
+}
+
+const loadGroups = () => {
+  return async (dispatch) => {
+    let querySnapshot = await getDocs(collection(db, 'groups'));
+    let newListGroups = querySnapshot.docs.map(docSnap => {
+      return {
+        ...docSnap.data(),
+        key: docSnap.id
+      }
+    }
+    )
+    console.log("In Actions .. Load Groups");
+    console.log(newListGroups);
+
+    dispatch({
+      type: LOAD_GROUPS,
+      payload: {
+        newListGroups: newListGroups,
+      }
+    }
+    );
+  }
+}
+
+const loadUsers = () => {
+  return async (dispatch) => {
+    let querySnapshot = await getDocs(collection(db, 'users'));
+    let newListUsers = querySnapshot.docs.map(docSnap => {
+      return {
+        ...docSnap.data(),
+        key: docSnap.id
+      }
+    }
+    )
+    console.log("In Actions .. Load Users");
+    console.log(newListUsers);
+
+    dispatch({
+      type: LOAD_USERS,
+      payload: {
+        newListUsers: newListUsers,
+      }
+    }
+    );
+  }
+}
 
 //   const loadGroups = () => {
 //     return async (dispatch) => {
@@ -158,6 +181,6 @@ const loadActivities = () => {
 //     }
 //   }
 
-export {loadActivities, loadGroups}
+export { loadActivities, loadGroups, loadUsers }
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }

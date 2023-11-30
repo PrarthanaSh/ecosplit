@@ -8,17 +8,14 @@ import { loadGroups } from "../data/Actions";
 
 
 function GroupsScreen(props) {
-  
   const { navigation, route } = props;
-  const groupItems = useSelector((state) => state.groupItems);
+  const groupItems = useSelector((state) => state.listGroups);
 
   const dispatch = useDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(loadGroups());
-    // dispatch(loadGroups());
   }, []);
-  
-  return(
+  return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Groups List</Text>
@@ -26,7 +23,7 @@ function GroupsScreen(props) {
       <View style={styles.listContainer}>
         <FlatList
           data={groupItems}
-          renderItem={({item})=>{
+          renderItem={({ item }) => {
             console.log("groupItems", item);
             return (
               <GroupItem item={item} navigation={navigation} />
@@ -36,10 +33,9 @@ function GroupsScreen(props) {
       </View>
       <Button
         title='Add'
-        onPress={()=>{
+        onPress={() => {
           navigation.navigate('Details', {
-            item: {key: -1, text: '', members: []}
-            // item: {key: -1, text: ''}
+            item: { key: -1, text: '', members: [] }
           });
         }}
       />
@@ -61,7 +57,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     paddingHorizontal: '10%',
-//    paddingBottom: '5%',
     paddingTop: '25%'
   },
   headerText: {

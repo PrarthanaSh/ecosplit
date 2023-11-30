@@ -1,7 +1,7 @@
 
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Button, Icon } from '@rneui/themed';
-import { useSelector, useDispatch } from 'react-redux';
+import { Icon } from '@rneui/themed';
+import { useDispatch } from 'react-redux';
 import { DELETE_ITEM } from '../Reducer';
 
 function GroupItem(props) {
@@ -21,24 +21,23 @@ function GroupItem(props) {
 
   return (
     <View style={styles.listItemContainer}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.li1}
-        onPress={()=>{
-          navigation.navigate('Details', { 
-            item: item 
+        onPress={() => {
+          navigation.navigate('Details', {
+            item: item
           });
-        }}  
+        }}
       >
-        <Text style={styles.listItemText}>{item.text}</Text>
-        
+        <Text style={styles.listItemText}>{item.groupName}</Text>
       </TouchableOpacity>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.li3}
-        onPress={()=>{
+        onPress={() => {
           deleteItem(item);
-        }}  
+        }}
       >
-        <Icon 
+        <Icon
           name="trash"
           type="font-awesome"
           color="black"
@@ -55,10 +54,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    //padding: '1%',
   },
   li1: {
-    flex: 0.8, 
+    flex: 0.8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
