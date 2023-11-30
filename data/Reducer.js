@@ -6,9 +6,13 @@ const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
-// const ADD_GROUP = 'ADD_GROUP';
-// const DELETE_GROUP = 'DELETE_GROUP';
-// const UPDATE_GROUP = 'UPDATE_GROUP';
+const ADD_ITEM= 'ADD_ITEM';
+const DELETE_ITEM = 'DELETE_ITEM';
+const UPDATE_ITEM = 'UPDATE_ITEM';
+
+// const ADD_MEMBER = 'ADD_MEMBER';
+// const UPDATE_MEMBER = 'UPDATE_MEMBER';
+// const DELETE_MEMBER = 'DELETE_MEMBER';
 
 const initGroups = [];
 const initActivities=[];
@@ -16,6 +20,81 @@ const initialState = {
   listActivities: initActivities,
   listGroups: initGroups,
 }
+
+const addItem = (state, newText, members) => {
+  let { groupItems } = state;
+  let newGroupItems = groupItems.concat({
+    text: newText,
+    key: Date.now() + Math.random(),
+    members: members,
+  });
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  };
+}
+
+const updateItem = (state, itemId, newText, members) => {
+  let { groupItems } = state;
+  let newItem = {
+    text: newText,
+    key: itemId, 
+    members: members,
+  };
+  let newGroupItems = groupItems.map(elem=>elem.key===itemId?newItem:elem);
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  };
+}
+
+const deleteItem = (state, itemId) => {
+  let { groupItems } = state;
+  let newGroupItems = groupItems.filter(elem=>elem.key !== itemId);
+  return {
+    ...state, 
+    groupItems: newGroupItems
+  }
+}
+
+// const addMember = (state, memberName, memberColor) => {
+//   return {
+//     ...state,
+//     members: state.members.concat({
+//       memberName: memberName,
+//       color: memberColor,
+//       key: Date.now()
+//     })
+//   }
+// }
+
+// const updateMember = (state, memberId, memberName, memberColor) => {
+//   let nwTag = {
+//     memberName: memberName,
+//     color: memberColor,
+//     key: memberId
+//   }
+//   let newMembers = state.members.map(elm => elm.key===memberId ? nwTag : elm);
+//   return {
+//     ...state,
+//     members: newMembers
+//   }  
+// }
+
+// const deleteMember = (state, memberId) => {
+//   let newListItems = [];
+//   state.listItems.forEach(elem=>{
+//     let newElem = {...elem};
+//     newElem.members = elem.members.filter(memberKey=>memberKey!==memberId);
+//     newListItems.push(newElem);
+//   });
+//   return {
+//     ...state,
+//     listItems: newListItems,
+//     members: state.members.filter(elem=>elem.key!==memberId)
+//   }
+  
+// }
 
 // const addContact = (state, contactDict, groups, key) => {
 //   let { listContacts } = state;

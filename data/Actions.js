@@ -27,12 +27,13 @@ import {LOAD_ACTIVITIES, LOAD_GROUPS } from "./Reducer";
 
 // const addGroup = (newGroupTitle) => {
 //     return async (dispatch) => {
-//         const docRef = await addDoc(collection(db, 'ErrorHere'), { groupTitle: newGroupTitle});
+//         const docRef = await addDoc(collection(db, 'groups'), { groupTitle: newGroupTitle });
 //         const id = docRef.id;
 //     dispatch({
-//       type: ADD_GROUP,
+//       type: ADD_ITEM,
 //       payload: {
 //         groupTitle: newGroupTitle,
+//         members: members, // users
 //         key: id,
 //       }
 //     });
@@ -156,7 +157,7 @@ const loadActivities = () => {
 //       );
 //     }
 //   }
-  
+
 export {loadActivities, loadGroups}
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }

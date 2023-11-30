@@ -7,11 +7,13 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import AddExScreen from './screens/AddExScreen';
 import GroupsScreen from './screens/GroupsScreen';
+import DetailsScreen from './screens/DetailsScreen';
 
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 import { rootReducer } from './data/Reducer';
+// import { rootReducer } from './Reducer';
 
 import { Icon } from '@rneui/themed';
 
@@ -27,7 +29,7 @@ function NavSkeleton() {
     return (
         <Provider store={store}>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName='Login' 
+            <Stack.Navigator initialRouteName='Login'
               screenOptions={{ headerShown: false }}>
               <Stack.Screen name='Login' component={LoginScreen}/>
               <Stack.Screen name='HomeSet' component={HomeSet}/>
@@ -39,7 +41,6 @@ function NavSkeleton() {
 
 function HomeSet() {
     const Tabs = createBottomTabNavigator();
-    
     return (
       <Tabs.Navigator>
         <Tabs.Screen name="Home"
@@ -75,6 +76,19 @@ function HomeSet() {
                                 return (
                                     <Icon
                                         name="groups"
+                                        color={color}
+                                        size={size}
+                                    />
+                                );
+                            }
+                        }} />
+        <Tabs.Screen name="Details"
+                        component={DetailsScreen}
+                        options={{
+                            tabBarIcon: ({ focused, color, size }) => {
+                                return (
+                                    <Icon
+                                        name="details"
                                         color={color}
                                         size={size}
                                     />
