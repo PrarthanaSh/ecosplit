@@ -4,7 +4,7 @@ import { Input, Button, Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from 'react-redux';
 // import { Dropdown } from 'react-native-element-dropdown';
 
-import { loadUsers } from "../data/Actions";
+import { loadUsers, addGroup } from "../data/Actions";
 
 function DetailsScreen(props) {
 
@@ -14,8 +14,8 @@ function DetailsScreen(props) {
   const { navigation, route } = props;
   const { item } = route.params; // not working
 
-  const [inputText, setInputText] = useState(item.text);
-  const [selectedMembers, setSelectedMembers] = useState(item.members);
+  const [groupName, setGroupName] = useState('');
+  const [selectedMembers, setSelectedMembers] = useState('');
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -32,8 +32,8 @@ function DetailsScreen(props) {
       <View style={styles.inputContainer}>
         <Input
           placeholder='New Group'
-          value={inputText}
-          onChangeText={(text) => setInputText(text)}
+          value={groupName}
+          onChangeText={(text) => setGroupName(text)}
           style={styles.inputStyle}
         />
       </View>
@@ -68,14 +68,18 @@ function DetailsScreen(props) {
         <Button
           title='Cancel'
           onPress={() => {
-            navigation.navigate('Groups');
+            navigation.navigate('Groups'); // not going back to Groups screen
           }}
         />
         <Button
           title='Save'
           onPress={() => {
             if (item.key === -1) {
-              // addItem(inputText, selectedMembers);
+              console.log("Details Screen");
+              console.log(groupName);
+              console.log(selectedMembers);
+
+              addGroup(groupName, selectedMembers);
             } else {
               // updateItem(item, inputText, selectedMembers);
             }

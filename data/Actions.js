@@ -6,7 +6,7 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS } from "./Reducer";
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP } from "./Reducer";
 // import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
 
 
@@ -25,20 +25,26 @@ import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS } from "./Reducer";
 //     }
 // }
 
-// const addGroup = (newGroupTitle) => {
-//     return async (dispatch) => {
-//         const docRef = await addDoc(collection(db, 'groups'), { groupTitle: newGroupTitle });
-//         const id = docRef.id;
-//     dispatch({
-//       type: ADD_ITEM,
-//       payload: {
-//         groupTitle: newGroupTitle,
-//         members: members, // users
-//         key: id,
-//       }
-//     });
-//   }
-// }
+const addGroup = (newGroupName, newMembers) => {
+  console.log("In Actions: addGroup function");
+              console.log(newGroupName);
+              console.log(newMembers);
+
+
+    return async (dispatch) => {
+        const docRef = await addDoc(collection(db, 'groups'), { groupName: newGroupName, members: newMembers });
+        // const docRef = await addDoc(collection(db, 'groups'));
+        const id = docRef.id;
+        dispatch({
+          type: ADD_GROUP,
+          payload: {
+            groupName: newGroupName,
+            members: newMembers, // users
+            key: id,
+      }
+    });
+  }
+}
 
 // const updateExpense = (contact, contactDict, newGroups) => {
 //     return async (dispatch) => {
@@ -181,6 +187,6 @@ const loadUsers = () => {
 //     }
 //   }
 
-export { loadActivities, loadGroups, loadUsers }
+export { loadActivities, loadGroups, loadUsers, addGroup }
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }

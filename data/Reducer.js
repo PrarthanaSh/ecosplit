@@ -5,6 +5,7 @@
 const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
 const LOAD_USERS = 'LOAD_USERS';
+const ADD_GROUP = 'ADD_GROUP';
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
 // const ADD_ITEM= 'ADD_ITEM';
@@ -198,17 +199,21 @@ const loadUsers = (state, users) => {
 //   }
 // }
 
-// const addGroup = (state, newGroup, key) => {
-//   let { groups } = state;
-//   let newGroups = groups.concat({
-//     groupTitle: newGroup,
-//     key: key
-//   });
-//   return {
-//     ...state,
-//     groups: newGroups
-//   };
-// }
+const addGroup = (state, newGroupName, newMembers, key) => {
+  console.log("In reducer: function addGroup");
+      console.log(newGroupName);
+      console.log(newMembers);
+  let { groups } = state;
+  let newGroups = groups.concat({
+    groupName: newGroupName,
+    members: newMembers,
+    key: key
+  });
+  return {
+    ...state,
+    groups: newGroups
+  };
+}
 
 // const updateGroup = (state, groupId, newGroupName) => {
 //   let { groups } = state;
@@ -240,8 +245,11 @@ function rootReducer(state = initialState, action) {
       return loadGroups(state, payload.newListGroups);
     case LOAD_USERS:
       return loadUsers(state, payload.newListUsers);
-    // case ADD_GROUP:
-    //   return addGroup(state, action.payload.groupTitle, payload.key);
+    case ADD_GROUP:
+      console.log("In reducer: action ADD_GROUP");
+      console.log(action.payload.groupName);
+      console.log(action.payload.members);
+      return addGroup(state, action.payload.groupName, action.payload.members, payload.key);
     // case UPDATE_GROUP:
     //   return updateGroup(state, action.payload.key, action.payload.groupTitle);
     // case DELETE_GROUP:
@@ -254,6 +262,6 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP,
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };
