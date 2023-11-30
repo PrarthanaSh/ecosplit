@@ -203,7 +203,7 @@ const addGroup = (state, newGroupName, newMembers, key) => {
   console.log("In reducer: function addGroup");
       console.log(newGroupName);
       console.log(newMembers);
-  let { groups } = state;
+  let { listGroup } = state;
   let newGroups = groups.concat({
     groupName: newGroupName,
     members: newMembers,
@@ -211,7 +211,7 @@ const addGroup = (state, newGroupName, newMembers, key) => {
   });
   return {
     ...state,
-    groups: newGroups
+    listGroups: newGroups
   };
 }
 
