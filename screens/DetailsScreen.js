@@ -79,7 +79,7 @@ function DetailsScreen(props) {
               console.log(groupName);
               console.log(selectedMembers);
 
-              addGroup(groupName, selectedMembers);
+              dispatch(addGroup(groupName, selectedMembers));
             } else {
               // updateItem(item, inputText, selectedMembers);
             }
