@@ -4,7 +4,7 @@ import { Input, Button, Icon } from '@rneui/themed';
 import { useSelector, useDispatch } from 'react-redux';
 // import { Dropdown } from 'react-native-element-dropdown';
 
-import { loadUsers, addGroup } from "../data/Actions";
+import { loadUsers, addGroup, updateGroup } from "../data/Actions";
 
 function DetailsScreen(props) {
 
@@ -14,8 +14,8 @@ function DetailsScreen(props) {
   const { navigation, route } = props;
   const { item } = route.params; // not working
 
-  const [groupName, setGroupName] = useState('');
-  const [selectedMembers, setSelectedMembers] = useState('');
+  const [groupName, setGroupName] = useState(item.groupName);
+  const [selectedMembers, setSelectedMembers] = useState(item.members); // need to update
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -75,15 +75,11 @@ function DetailsScreen(props) {
           title='Save'
           onPress={() => {
             if (item.key === -1) {
-              console.log("Details Screen");
-              console.log(groupName);
-              console.log(selectedMembers);
-
-              addGroup(groupName, selectedMembers);
+              dispatch(addGroup(groupName, selectedMembers));
             } else {
-              // updateItem(item, inputText, selectedMembers);
+              dispatch(updateGroup(item, groupName, selectedMembers));
             }
-            navigation.navigate('Groups'); // save button not saving info
+            navigation.navigate('Groups'); // not navigating back to groups screen
           }}
         />
       </View>

@@ -2,7 +2,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 import { useDispatch } from 'react-redux';
-import { DELETE_ITEM } from '../Reducer';
+import { DELETE_GROUP } from '../data/Reducer';
 
 function GroupItem(props) {
 
@@ -11,7 +11,7 @@ function GroupItem(props) {
 
   const deleteItem = (item) => {
     dispatch({
-      type: DELETE_ITEM,
+      type: DELETE_GROUP,
       payload: {
         key: item.key
       }
