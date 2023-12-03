@@ -6,58 +6,53 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, ADD_USER } from "./Reducer";
-// import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
-
-
-// const addExpense = (expenseDict, newGroups) => {
-//     return async (dispatch) => {
-//         const docRef = await addDoc(collection(db, 'ErrorHere'), { expenseDict: expenseDict , groups: newGroups});
-//         const id = docRef.id;
-//         dispatch({
-//             type: ADD_EXPENSE,
-//             payload: {
-//                 expenseDict: contactDict,
-//                 groups: newGroups,
-//                 key: id,
-//             }
-//         })
-//     }
-// }
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, ADD_USER, ADD_EXPENSE } from "./Reducer";
 
 const addGroup = (newGroupName, newMembers) => {
-  console.log("In Actions: addGroup function");
-              console.log(newGroupName);
-              console.log(newMembers);
+  return async (dispatch) => {
+    const docRef = await addDoc(collection(db, 'groups'), { groupName: newGroupName, members: newMembers });
+    const id = docRef.id;
+    dispatch({
+      type: ADD_GROUP,
+      payload: {
+        newGroupName: newGroupName,
+        newMembers: newMembers, // users
+        key: id,
+      }
+    });
+  }
+}
 
-
-    return async (dispatch) => {
-        const docRef = await addDoc(collection(db, 'groups'), { groupName: newGroupName, members: newMembers });
-        // const docRef = await addDoc(collection(db, 'groups'));
-        const id = docRef.id;
-        dispatch({
-          type: ADD_GROUP,
-          payload: {
-            newGroupName: newGroupName,
-            newMembers: newMembers, // users
-            key: id,
+const addExpense = (newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags) => {
+  return async (dispatch) => {
+    const docRef = await addDoc(collection(db, 'expenses'), { activityType: newActivityType, carbonCost: newCarbonCost, group: newGroup, expenseAmt: newExpenseAmt, split: newSplit, tags: newTags });
+    const Expid = docRef.id;
+    dispatch({
+      type: ADD_EXPENSE,
+      payload: {
+        newActivityType: newActivityType,
+        newCarbonCost: newCarbonCost,
+        newGroup: newGroup,
+        newExpenseAmt: newExpenseAmt,
+        newSplit: newSplit,
+        newTags: newTags,
+        key: Expid,
       }
     });
   }
 }
 
 const addUser = (newDisplayName, newEmail, newExpense) => {
-    return async (dispatch) => {
-        const docRef = await addDoc(collection(db, 'users'), { displayName: newDisplayName, email: newEmail, expense: newExpense });
-        // const docRef = await addDoc(collection(db, 'groups'));
-        const id = docRef.id;
-        dispatch({
-          type: ADD_USER,
-          payload: {
-            newDisplayName: newDisplayName,
-            newEmail: newEmail, // users
-            newExpense: newExpense,
-            key: id,
+  return async (dispatch) => {
+    const docRef = await addDoc(collection(db, 'users'), { displayName: newDisplayName, email: newEmail, expense: newExpense });
+    const id = docRef.id;
+    dispatch({
+      type: ADD_USER,
+      payload: {
+        newDisplayName: newDisplayName,
+        newEmail: newEmail, // users
+        newExpense: newExpense,
+        key: id,
       }
     });
   }
@@ -125,9 +120,6 @@ const loadActivities = () => {
       }
     }
     )
-    console.log("In Actions .. Load Activities");
-    console.log(newListActivities);
-
     dispatch({
       type: LOAD_ACTIVITIES,
       payload: {
@@ -148,9 +140,6 @@ const loadGroups = () => {
       }
     }
     )
-    console.log("In Actions .. Load Groups");
-    console.log(newListGroups);
-
     dispatch({
       type: LOAD_GROUPS,
       payload: {
@@ -171,9 +160,6 @@ const loadUsers = () => {
       }
     }
     )
-    console.log("In Actions .. Load Users");
-    console.log(newListUsers);
-
     dispatch({
       type: LOAD_USERS,
       payload: {
@@ -204,6 +190,7 @@ const loadUsers = () => {
 //     }
 //   }
 
-export { loadActivities, loadGroups, loadUsers, addGroup, addUser }
+
+export { loadActivities, loadGroups, loadUsers, addGroup, addUser, addExpense }
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }
