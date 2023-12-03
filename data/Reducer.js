@@ -6,11 +6,10 @@ const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
 const LOAD_USERS = 'LOAD_USERS';
 const ADD_GROUP = 'ADD_GROUP';
-
 const UPDATE_GROUP = 'UPDATE_GROUP';
 const DELETE_GROUP = 'DELETE_GROUP';
-
 const ADD_USER = 'ADD_USER';
+const ADD_EXPENSE = 'ADD_EXPENSE';
 
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
@@ -25,10 +24,14 @@ const ADD_USER = 'ADD_USER';
 const initGroups = [];
 const initActivities = [];
 const initUsers = [];
+const initTags = [];
+const initExpenses = [];
 const initialState = {
   listActivities: initActivities,
   listGroups: initGroups,
   listUsers: initUsers,
+  listTags: initTags,
+  listExpenses: initExpenses
 }
 
 // const addItem = (state, newText, members) => {
@@ -174,6 +177,8 @@ const loadGroups = (state, groups) => {
   }
 }
 
+
+
 const loadUsers = (state, users) => {
   return {
     ...state,
@@ -206,7 +211,6 @@ const loadUsers = (state, users) => {
 // }
 
 const addGroup = (state, newGroupName, newMembers, key) => {
-  
   let { groups } = state;
   let newGroups = groups.concat({
     groupName: newGroupName,
@@ -221,7 +225,6 @@ const addGroup = (state, newGroupName, newMembers, key) => {
 
 
 const updateGroup = (state, newGroupName, newMembers, key) => {
-
   let { groups } = state;
   let newGroup = {
     groupName: newGroupName,
@@ -258,6 +261,23 @@ const addUser = (state, newDisplayName, newEmail, newExpense, key) => {
   };
 }
 
+const addExpense = (state, newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags, key) => {
+  let { listExpenses } = state;
+  let newExpenses = listExpenses.concat({
+    activityType: newActivityType,
+    carbonCost: newCarbonCost,
+    group: newGroup,
+    expenseAmt: newExpenseAmt,
+    split: newSplit,
+    tags: newTags,
+    key: key
+  });
+  return {
+    ...state,
+    listExpenses: newExpenses
+  };
+}
+
 // const updateGroup = (state, groupId, newGroupName) => {
 //   let { groups } = state;
 //   let newGroup = {
@@ -282,12 +302,6 @@ function rootReducer(state = initialState, action) {
     //   return updateContact(state, payload.key, payload.contactDict, payload.groups);
     // case DELETE_CONTACT:
     //   return deleteContact(state, payload.key);
-    case LOAD_ACTIVITIES:
-      return loadActivities(state, payload.newListActivities);
-    case LOAD_GROUPS:
-      return loadGroups(state, payload.newListGroups);
-    case LOAD_USERS:
-      return loadUsers(state, payload.newListUsers);
     case ADD_GROUP:
       return addGroup(state, action.payload.groupName, action.payload.members, payload.key);
     case UPDATE_GROUP:
@@ -295,21 +309,26 @@ function rootReducer(state = initialState, action) {
     case DELETE_GROUP:
       return deleteGroup(state, payload.key);
     case ADD_USER:
-      return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newMembers, payload.key);
+      return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newExpense, payload.key);
+    case ADD_EXPENSE:
+      return addExpense(state, action.payload.newActivityType, action.payload.newCarbonCost, action.payload.newGroup, action.payload.newExpenseAmt, action.payload.newSplit, action.payload.newTags, payload.key);
     // case UPDATE_GROUP:
     //   return updateGroup(state, action.payload.key, action.payload.groupTitle);
     // case DELETE_GROUP:
     //   return deleteGroup(state, action.payload.key);
     //   case LOAD_GROUPS:
     //     return loadGroups(state, payload.newGroups);
+    case LOAD_ACTIVITIES:
+      return loadActivities(state, payload.newListActivities);
+    case LOAD_GROUPS:
+      return loadGroups(state, payload.newListGroups);
+    case LOAD_USERS:
+      return loadUsers(state, payload.newListUsers);
     default:
       return state;
   }
 }
 
 export {
-
-  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP
-
-  // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER
 };
