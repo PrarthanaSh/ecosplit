@@ -6,8 +6,12 @@ const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 const LOAD_GROUPS = 'LOAD_GROUPS';
 const LOAD_USERS = 'LOAD_USERS';
 const ADD_GROUP = 'ADD_GROUP';
+
 const UPDATE_GROUP = 'UPDATE_GROUP';
 const DELETE_GROUP = 'DELETE_GROUP';
+
+const ADD_USER = 'ADD_USER';
+
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
 // const ADD_ITEM= 'ADD_ITEM';
@@ -215,6 +219,7 @@ const addGroup = (state, newGroupName, newMembers, key) => {
   };
 }
 
+
 const updateGroup = (state, newGroupName, newMembers, key) => {
 
   let { groups } = state;
@@ -239,6 +244,33 @@ const deleteGroup = (state, key) => {
   }
 }
 
+const addUser = (state, newDisplayName, newEmail, newExpense, key) => {
+  let { listUsers } = state;
+  let newUsers = listUsers.concat({
+    displayName: newDisplayName,
+    email: newEmail,
+    expense: newExpense,
+    key: key
+  });
+  return {
+    ...state,
+    listUsers: newUsers
+  };
+}
+
+// const updateGroup = (state, groupId, newGroupName) => {
+//   let { groups } = state;
+//   let newGroup = {
+//     groupTitle: newGroupName,
+//     key: groupId
+//   };
+//   let newGroups = groups.map(elem => elem.key === groupId ? newGroup : elem);
+//   return {
+//     ...state,
+//     groups: newGroups
+//   };
+// }
+
 
 function rootReducer(state = initialState, action) {
 
@@ -262,6 +294,12 @@ function rootReducer(state = initialState, action) {
       return updateGroup(state, action.payload.groupName, action.payload.members, payload.key);
     case DELETE_GROUP:
       return deleteGroup(state, payload.key);
+    case ADD_USER:
+      return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newMembers, payload.key);
+    // case UPDATE_GROUP:
+    //   return updateGroup(state, action.payload.key, action.payload.groupTitle);
+    // case DELETE_GROUP:
+    //   return deleteGroup(state, action.payload.key);
     //   case LOAD_GROUPS:
     //     return loadGroups(state, payload.newGroups);
     default:
@@ -270,6 +308,8 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
+
   rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP
+
   // ADD_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,LOAD_CONTACTS, DELETE_GROUP, ADD_GROUP, UPDATE_GROUP, LOAD_GROUPS
 };

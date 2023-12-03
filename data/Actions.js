@@ -6,7 +6,8 @@ import { firebaseConfig } from '../Secrets';
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP } from "./Reducer";
+
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP } from "./Reducer
 // import { ADD_EXPENSE, UPDATE_EXPENSE, DELETE_EXPENSE, LOAD_ACTIVITIES, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, LOAD_GROUPS } from "./Reducer";
 
 
@@ -35,8 +36,25 @@ const addGroup = (newGroupName, newMembers) => {
         dispatch({
           type: ADD_GROUP,
           payload: {
-            groupName: newGroupName,
-            members: newMembers, // users
+            newGroupName: newGroupName,
+            newMembers: newMembers, // users
+            key: id,
+      }
+    });
+  }
+}
+
+const addUser = (newDisplayName, newEmail, newExpense) => {
+    return async (dispatch) => {
+        const docRef = await addDoc(collection(db, 'users'), { displayName: newDisplayName, email: newEmail, expense: newExpense });
+        // const docRef = await addDoc(collection(db, 'groups'));
+        const id = docRef.id;
+        dispatch({
+          type: ADD_USER,
+          payload: {
+            newDisplayName: newDisplayName,
+            newEmail: newEmail, // users
+            newExpense: newExpense,
             key: id,
       }
     });
@@ -182,6 +200,8 @@ const loadUsers = () => {
 //     }
 //   }
 
+
 export { loadActivities, loadGroups, loadUsers, addGroup, updateGroup, deleteGroup }
+
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }
