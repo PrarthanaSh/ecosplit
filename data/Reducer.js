@@ -219,13 +219,17 @@ const addGroup = (state, newGroupName, newMembers, key) => {
 }
 
 const updateGroup = (state, newGroupName, newMembers, key) => {
+  onsole.log("In reducer: function updateGroup");
+      console.log(newGroupName);
+      console.log(newMembers);
+
   let { groups } = state;
   let newGroup = {
     groupName: newGroupName,
     members: newMembers,
     key: key
   };
-  let newGroups = groups.map(elem => elem.key === groupId ? newGroup : elem);
+  let newGroups = groups.map(elem => elem.key === key ? newGroup : elem);
   return {
     ...state,
     groups: newGroups
@@ -265,8 +269,8 @@ function rootReducer(state = initialState, action) {
       return addGroup(state, action.payload.groupName, action.payload.members, payload.key);
     case UPDATE_GROUP:
       return updateGroup(state, action.payload.groupName, action.payload.members, payload.key);
-    // case DELETE_GROUP:
-    //   return deleteGroup(state, action.payload.key);
+    case DELETE_GROUP:
+      return deleteGroup(state, payload.key);
     //   case LOAD_GROUPS:
     //     return loadGroups(state, payload.newGroups);
     default:

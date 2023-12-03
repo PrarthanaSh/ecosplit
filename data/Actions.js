@@ -66,7 +66,8 @@ const updateGroup = (item, newGroupName, newMembers) => {
               console.log(newGroupName);
               console.log(newMembers);
     return async (dispatch) => {
-        await updateDoc(doc(db, 'groups'), {
+        await updateDoc(doc(db, 'groups', item.id), {
+        // await updateDoc(collection(db, 'groups', item.id), {
           groupName: newGroupName, 
           members: newMembers
         });
@@ -77,6 +78,7 @@ const updateGroup = (item, newGroupName, newMembers) => {
             groupName: newGroupName,
             members: newMembers, // users
             key: item.id,
+            // key: id
       }
     });
   }
@@ -163,8 +165,8 @@ const loadUsers = () => {
       }
     }
     )
-    console.log("In Actions .. Load Users");
-    console.log(newListUsers);
+    // console.log("In Actions .. Load Users");
+    // console.log(newListUsers);
 
     dispatch({
       type: LOAD_USERS,

@@ -9,11 +9,11 @@ function GroupItem(props) {
   const dispatch = useDispatch();
   const { item, navigation } = props;
 
-  const deleteItem = (item) => {
+  const deleteGroup = (item) => {
     dispatch({
       type: DELETE_GROUP,
       payload: {
-        key: item.key
+        key: item.id
       }
     })
 
@@ -34,7 +34,7 @@ function GroupItem(props) {
       <TouchableOpacity
         style={styles.li3}
         onPress={() => {
-          deleteItem(item);
+          deleteGroup(item);
         }}
       >
         <Icon
