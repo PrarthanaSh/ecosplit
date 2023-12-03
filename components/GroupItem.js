@@ -2,22 +2,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from '@rneui/themed';
 import { useDispatch } from 'react-redux';
-import { DELETE_ITEM } from '../Reducer';
+// import { DELETE_GROUP } from '../data/Reducer';
+import { deleteGroup } from '../data/Actions';
 
 function GroupItem(props) {
 
   const dispatch = useDispatch();
   const { item, navigation } = props;
 
-  const deleteItem = (item) => {
-    dispatch({
-      type: DELETE_ITEM,
-      payload: {
-        key: item.key
-      }
-    })
+  // const deleteGroup = (item) => {
+  //   dispatch({
+  //     type: DELETE_GROUP,
+  //     payload: {
+  //       key: item.id
+  //     }
+  //   })
 
-  }
+  // }
 
   return (
     <View style={styles.listItemContainer}>
@@ -34,7 +35,7 @@ function GroupItem(props) {
       <TouchableOpacity
         style={styles.li3}
         onPress={() => {
-          deleteItem(item);
+          dispatch(deleteGroup(item));
         }}
       >
         <Icon

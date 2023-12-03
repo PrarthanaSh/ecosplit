@@ -5,23 +5,7 @@ import { firebaseConfig } from '../Secrets';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, ADD_USER, ADD_EXPENSE } from "./Reducer";
-
-const addGroup = (newGroupName, newMembers) => {
-  return async (dispatch) => {
-    const docRef = await addDoc(collection(db, 'groups'), { groupName: newGroupName, members: newMembers });
-    const id = docRef.id;
-    dispatch({
-      type: ADD_GROUP,
-      payload: {
-        newGroupName: newGroupName,
-        newMembers: newMembers, // users
-        key: id,
-      }
-    });
-  }
-}
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER } from "./Reducer
 
 const addExpense = (newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags) => {
   return async (dispatch) => {
@@ -58,6 +42,20 @@ const addUser = (newDisplayName, newEmail, newExpense) => {
   }
 }
 
+const addGroup = (state, newGroupName, newMembers, key) => {
+  
+  let { groups } = state;
+  let newGroups = groups.concat({
+    groupName: newGroupName,
+    members: newMembers,
+    key: key
+  });
+  return {
+    ...state,
+    groups: newGroups
+  };
+}
+
 // const updateExpense = (contact, contactDict, newGroups) => {
 //     return async (dispatch) => {
 //         await updateDoc(doc(db, 'ErrorHere', contact.key), { contactDict: contactDict, groups: newGroups});
@@ -72,18 +70,22 @@ const addUser = (newDisplayName, newEmail, newExpense) => {
 //     }
 // }
 
-// const updateGroup = (group, groupTitle = group.groupTitle) => {
-//     return async (dispatch) => {
-//         await updateDoc(doc(db, 'ErrorHere', group.key), { groupTitle: groupTitle});
-//     dispatch({
-//       type: UPDATE_GROUP,
-//       payload: {
-//         key: group.key,
-//         groupTitle: groupTitle
-//       }
-//     });
-//   }
-// }
+const updateGroup = (item, newGroupName, newMembers) => {
+    return async (dispatch) => {
+        await updateDoc(doc(db, 'groups', item.key), {
+          groupName: newGroupName, 
+          members: newMembers
+        });
+        dispatch({
+          type: UPDATE_GROUP,
+          payload: {
+            groupName: newGroupName,
+            members: newMembers, // users
+            key: item.key,
+      }
+    });
+  }
+}
 
 
 // const deleteExpense = (contact) => {
@@ -98,17 +100,17 @@ const addUser = (newDisplayName, newEmail, newExpense) => {
 //     }
 // }
 
-// const deleteGroup = (group) => {
-//     return async (dispatch) => {
-//     await deleteDoc(doc(db, 'ErrorHere', group.key));
-//     dispatch({
-//       type: DELETE_GROUP,
-//       payload: {
-//         key: group.key
-//       }
-//     })
-//   }
-// }
+const deleteGroup = (item) => {
+    return async (dispatch) => {
+    await deleteDoc(doc(db, 'groups', item.key));
+    dispatch({
+      type: DELETE_GROUP,
+      payload: {
+        key: item.key
+      }
+    })
+  }
+}
 
 const loadActivities = () => {
   return async (dispatch) => {
@@ -191,6 +193,8 @@ const loadUsers = () => {
 //   }
 
 
-export { loadActivities, loadGroups, loadUsers, addGroup, addUser, addExpense }
+export { loadActivities, loadGroups, loadUsers, addGroup, updateGroup, deleteGroup, addExpense, addUser}
+
+
 
 // export { addExpense, updateExpense, deleteExpense, loadExpenses, addGroup, updateGroup, deleteGroup, loadGroups }
