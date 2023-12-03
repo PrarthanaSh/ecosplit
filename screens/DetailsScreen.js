@@ -70,6 +70,7 @@ function DetailsScreen(props) {
           onPress={() => {
             navigation.navigate('Groups'); // not going back to Groups screen
           }}
+          buttonStyle={styles.cancel}
         />
         <Button
           title='Save'
@@ -81,6 +82,7 @@ function DetailsScreen(props) {
             }
             navigation.navigate('Groups'); // not navigating back to groups screen
           }}
+          buttonStyle={styles.save}
         />
       </View>
     </View>
@@ -93,7 +95,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    paddingTop: '20%'
+    paddingTop: '20%',
+    backgroundColor: 'ivory'
   },
   header: {
     flex: 0.1,
@@ -101,7 +104,9 @@ const styles = StyleSheet.create({
     paddingBottom: '5%'
   },
   headerText: {
-    fontSize: 32
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'gray'
   },
   inputContainer: {
     flex: 0.1,
@@ -137,7 +142,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '80%'
-  }
+  },
+  save:{
+    backgroundColor: '#252926',
+    borderRadius: 40,
+    padding: "4%",
+  },
+  cancel: {
+    backgroundColor: 'lightgray',
+    borderRadius: 40,
+    padding: "4%",
+  },
 });
 
 export default DetailsScreen;
