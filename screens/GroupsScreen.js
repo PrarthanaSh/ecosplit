@@ -14,7 +14,8 @@ function GroupsScreen(props) {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadGroups());
-  }, []);
+  }, [groupItems]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -24,7 +25,6 @@ function GroupsScreen(props) {
         <FlatList
           data={groupItems}
           renderItem={({ item }) => {
-            console.log("groupItems", item);
             return (
               <GroupItem item={item} navigation={navigation} />
             );
