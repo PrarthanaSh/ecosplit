@@ -42,18 +42,19 @@ const addUser = (newDisplayName, newEmail, newExpense) => {
   }
 }
 
-const addGroup = (state, newGroupName, newMembers, key) => {
-  
-  let { groups } = state;
-  let newGroups = groups.concat({
-    groupName: newGroupName,
-    members: newMembers,
-    key: key
-  });
-  return {
-    ...state,
-    groups: newGroups
-  };
+const addGroup = (newGroupName, newMembers) => {
+  return async (dispatch) => {
+    const docRef = await addDoc(collection(db, 'groups'), { groupName: newGroupName, members: newMembers });
+    const id = docRef.id;
+    dispatch({
+      type: ADD_GROUP,
+      payload: {
+        newGroupName: newGroupName,
+        newMembers: newMembers, // users
+        key: id,
+      }
+    });
+  }
 }
 
 // const updateExpense = (contact, contactDict, newGroups) => {
