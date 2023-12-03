@@ -29,6 +29,7 @@ function GroupsScreen(props) {
               <GroupItem item={item} navigation={navigation} />
             );
           }}
+          style={styles.listText}
         />
       </View>
       <Button
@@ -38,6 +39,7 @@ function GroupsScreen(props) {
             item: { key: -1, text: '', members: [] }
           });
         }}
+        buttonStyle={styles.addButton}
       />
     </View>
   );
@@ -49,6 +51,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: 'ivory'
   },
   header: {
     flex: 0.1,
@@ -60,13 +63,24 @@ const styles = StyleSheet.create({
     paddingTop: '25%'
   },
   headerText: {
-    fontSize: 32
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'gray'
+  },
+  listText: {
+    fontSize: 18,
+    color: 'gray'
   },
   listContainer: {
     flex: 0.6,
     width: '100%',
     paddingLeft: '10%',
     paddingTop: '10%'
+  },
+  addButton:{
+    backgroundColor: '#252926',
+    borderRadius: 40,
+    padding: "4%",
   },
   menuContainer: {
     padding: '5%'
