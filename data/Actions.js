@@ -26,10 +26,6 @@ import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELE
 // }
 
 const addGroup = (newGroupName, newMembers) => {
-  console.log("In Actions: addGroup function");
-              console.log(newGroupName);
-              console.log(newMembers);
-
     return async (dispatch) => {
         const docRef = await addDoc(collection(db, 'groups'), {
           groupName: newGroupName, 
@@ -62,23 +58,17 @@ const addGroup = (newGroupName, newMembers) => {
 // }
 
 const updateGroup = (item, newGroupName, newMembers) => {
-  console.log("In Actions: updateGroup function");
-              console.log(newGroupName);
-              console.log(newMembers);
     return async (dispatch) => {
         await updateDoc(doc(db, 'groups', item.key), {
-        // await updateDoc(collection(db, 'groups', item.id), {
           groupName: newGroupName, 
           members: newMembers
         });
-        // const id = docRef.id;
         dispatch({
           type: UPDATE_GROUP,
           payload: {
             groupName: newGroupName,
             members: newMembers, // users
             key: item.key,
-            // key: id
       }
     });
   }
@@ -99,11 +89,11 @@ const updateGroup = (item, newGroupName, newMembers) => {
 
 const deleteGroup = (item) => {
     return async (dispatch) => {
-    await deleteDoc(doc(db, 'groups'));
+    await deleteDoc(doc(db, 'groups', item.key));
     dispatch({
       type: DELETE_GROUP,
       payload: {
-        key: item.id
+        key: item.key
       }
     })
   }
@@ -119,8 +109,6 @@ const loadActivities = () => {
       }
     }
     )
-    console.log("In Actions .. Load Activities");
-    console.log(newListActivities);
 
     dispatch({
       type: LOAD_ACTIVITIES,
@@ -142,9 +130,7 @@ const loadGroups = () => {
       }
     }
     )
-    console.log("In Actions .. Load Groups");
-    console.log(newListGroups);
-
+    
     dispatch({
       type: LOAD_GROUPS,
       payload: {
@@ -165,8 +151,6 @@ const loadUsers = () => {
       }
     }
     )
-    // console.log("In Actions .. Load Users");
-    // console.log(newListUsers);
 
     dispatch({
       type: LOAD_USERS,

@@ -202,9 +202,6 @@ const loadUsers = (state, users) => {
 // }
 
 const addGroup = (state, newGroupName, newMembers, key) => {
-  console.log("In reducer: function addGroup");
-      console.log(newGroupName);
-      console.log(newMembers);
   
   let { groups } = state;
   let newGroups = groups.concat({
@@ -219,9 +216,6 @@ const addGroup = (state, newGroupName, newMembers, key) => {
 }
 
 const updateGroup = (state, newGroupName, newMembers, key) => {
-  onsole.log("In reducer: function updateGroup");
-      console.log(newGroupName);
-      console.log(newMembers);
 
   let { groups } = state;
   let newGroup = {
@@ -263,9 +257,6 @@ function rootReducer(state = initialState, action) {
     case LOAD_USERS:
       return loadUsers(state, payload.newListUsers);
     case ADD_GROUP:
-      console.log("In reducer: action ADD_GROUP");
-      console.log(action.payload.groupName);
-      console.log(action.payload.members);
       return addGroup(state, action.payload.groupName, action.payload.members, payload.key);
     case UPDATE_GROUP:
       return updateGroup(state, action.payload.groupName, action.payload.members, payload.key);
