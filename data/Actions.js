@@ -66,7 +66,7 @@ const updateGroup = (item, newGroupName, newMembers) => {
               console.log(newGroupName);
               console.log(newMembers);
     return async (dispatch) => {
-        await updateDoc(doc(db, 'groups', item.id), {
+        await updateDoc(doc(db, 'groups', item.key), {
         // await updateDoc(collection(db, 'groups', item.id), {
           groupName: newGroupName, 
           members: newMembers
@@ -77,7 +77,7 @@ const updateGroup = (item, newGroupName, newMembers) => {
           payload: {
             groupName: newGroupName,
             members: newMembers, // users
-            key: item.id,
+            key: item.key,
             // key: id
       }
     });
