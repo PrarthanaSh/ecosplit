@@ -5,7 +5,7 @@ import { firebaseConfig } from '../Secrets';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER } from "./Reducer
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER } from "./Reducer"
 
 const addExpense = (newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags) => {
   return async (dispatch) => {
