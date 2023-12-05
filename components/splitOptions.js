@@ -32,7 +32,7 @@ const addOrSelectChat = (user1id, user2id) => {
 
   // }
 }
-const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType }) => {
+const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, userListwithExpense }) => {
   const isFocus = true
   const [selectedSplitOption, setSelectedSplitOption] = useState(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(true); 
@@ -49,12 +49,12 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
     ? userList.filter(user => selectedGroup.members.includes(user.key))
     : [];
   const userNum = usersInGroup.length
-  const totalExpense = selectedActivityType.carbonCost
+  const totalExpense = expenseAmt
   const userListwithExpense = usersInGroup.map(obj => {
     return { ...obj, expense: totalExpense/userNum};
   })
 
-  // console.log(userListwithExpense)
+  
   // console.log("users:", userList)
   // console.log('group (im inside modal) updated:', selectedGroup)
   // console.log("filtered-----", usersInGroup)
@@ -89,12 +89,24 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
           labelField="value"
           valueField="value"
           data={splitOptions}
-          laceholder={!isFocus ? 'Splitting Evenly' : '...'}
+          placeholder={!isFocus ? 'Splitting Evenly' : '...'}
           onChange={handleDropdownChange}
           value={selectedSplitOption}
 
         />
       </View>
+
+      <View style={styles.inputContainer}>
+          <Text style={styles.labelText}>Expense Amount</Text>
+          <TextInput
+            style={styles.inputBox}
+            value={expenseAmt}
+            onChangeText={(text) => {setExpenseAmt(text)
+              console.log(userListwithExpense)}}
+            placeholder='0.00'
+          // disabled='true'
+          />
+        </View>
 
       {userListwithExpense && <FlatList
         data={userListwithExpense}
@@ -125,6 +137,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
         buttonStyle={styles.button}
         title="Save"
         onPress={handleUpdateUsers}
+        
       />
 
     </Overlay>
