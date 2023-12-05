@@ -205,6 +205,8 @@ function AddExScreen({ navigation }) {
           onClose={() => setModalVisible(false)}
           selectedGroup={group}
           selectedActivityType={selectedActivityType}
+          expenseAmt={expenseAmt}
+          setExpenseAmt={setExpenseAmt}
         />}
       </View>
     </ScrollView>
