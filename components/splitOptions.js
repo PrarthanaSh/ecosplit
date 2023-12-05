@@ -64,7 +64,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
     setSelectedSplitOption(item.value);
   };
 
-  const handleSave = () => {
+  const handleSave = (userListWithExpense) => {
     // Assuming userListWithExpense is prepared and ready to be sent
     onSaveUserListWithExpense(userListWithExpense);
     // You can also handle closing the overlay or other actions here
@@ -135,7 +135,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
       <Button
         buttonStyle={styles.button}
         title="Save"
-        onPress={handleSave}
+        onPress={() => onSaveUserListWithExpense(userListwithExpense)}
         
       />
 

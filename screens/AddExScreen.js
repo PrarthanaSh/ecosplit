@@ -16,7 +16,7 @@ function AddExScreen({ navigation }) {
   useEffect(() => {
     dispatch(loadActivities());
     dispatch(loadGroups());
-    console.log(savedUserListWithExpense)
+    
   }, []);
 
 
@@ -69,15 +69,15 @@ function AddExScreen({ navigation }) {
     const splitDetails = [].concat(...splitMembers);
     //This code will change based on split options
 
-    dispatch(addExpense(activityKey, carbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
-
+    // dispatch(addExpense(activityKey, carbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
+    console.log(savedUserListWithExpense)
   }
 
   const handleUserListWithExpense = (userList) => {
     // Process or save userList in the state of AddExScreen
     // For example:
     setSavedUserListWithExpense(userList)
-    console.log(savedUserListWithExpense)
+    // console.log(savedUserListWithExpense)
   };
 
   console.log()
