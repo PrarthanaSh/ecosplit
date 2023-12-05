@@ -21,6 +21,7 @@ function AddExScreen({ navigation }) {
 
   const allActivites = useSelector((state) => state.listActivities);
   const allGroups = useSelector((state) => state.listGroups);
+  
 
   const [selectedActivityType, setSelectedActivityType] = useState('');
   const [expenseAmt, setExpenseAmt] = useState('');
@@ -48,8 +49,8 @@ function AddExScreen({ navigation }) {
   });
 
   const calculateCarbonCost = () => {
-    console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
-    console.log("Inside calculateCarbonCost->Activity Tags = ", activityTags);
+    // console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
+    // console.log("Inside calculateCarbonCost->Activity Tags = ", activityTags);
     const tagsAdjustment = activityTags
       .filter(tag => selectedTags.includes(tag.key))
       .map(tag => tag.value)
@@ -93,7 +94,7 @@ function AddExScreen({ navigation }) {
             search
             maxHeight={300}
             labelField="name"
-            valueField="value"
+            valueField="name"
             placeholder={!isAcFocus ? 'Select activity' : '...'}
             searchPlaceholder="Search..."
             value={selectedActivityType}
@@ -102,7 +103,7 @@ function AddExScreen({ navigation }) {
             onChange={(item) => {
               setIsAcFocus(false);
               setSelectedActivityType(item);
-              console.log('In AddEx screen -> Expense title Dropdown Value:', item);
+              // console.log('In AddEx screen -> Expense title Dropdown Value:', item);
               setActivityTags(item.tags);
               setSelectedTags([]);
               setCarbonCost(item.value);
@@ -140,7 +141,8 @@ function AddExScreen({ navigation }) {
             onBlur={() => setIsGrFocus(false)}
             onChange={(item) => {
               setIsGrFocus(false);
-              setGroup(item.groupName);
+              setGroup(item);
+              // console.log("groups", group)
             }}
             renderLeftIcon={() => (
               <Icon
@@ -180,7 +182,7 @@ function AddExScreen({ navigation }) {
           <Button
             title="Split Options"
             onPress={() => setModalVisible(true)}
-            disabled={!selectedActivityType}
+            disabled={!selectedActivityType || !group }
             disabledStyle={styles.disabledButton}
             disabledTitleStyle={styles.disabledTitle}
             buttonStyle={isDisabled ? styles.disabledButton : styles.buttonEnabled}
@@ -198,12 +200,12 @@ function AddExScreen({ navigation }) {
         </View>
 
 
-        <SplitOptionsOverlay
+        {selectedActivityType&&group&&<SplitOptionsOverlay
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
           selectedGroup={group}
           selectedActivityType={selectedActivityType}
-        />
+        />}
       </View>
     </ScrollView>
     // </KeyboardAvoidingView>
