@@ -32,7 +32,7 @@ const addOrSelectChat = (user1id, user2id) => {
 
   // }
 }
-const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, userListwithExpense }) => {
+const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, onSaveUserListWithExpense }) => {
   const isFocus = true
   const [selectedSplitOption, setSelectedSplitOption] = useState(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(true); 
@@ -64,13 +64,12 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
     setSelectedSplitOption(item.value);
   };
 
-  const handleUpdateUsers = () => {
-    userList.forEach(user => {
-      const updatedUser = { ...userListwithExpense }; 
-      dispatch(updateUser(userList, updatedUser));
-    });
-    setIsOverlayVisible(false);
+  const handleSave = () => {
+    // Assuming userListWithExpense is prepared and ready to be sent
+    onSaveUserListWithExpense(userListWithExpense);
+    // You can also handle closing the overlay or other actions here
   };
+
 
   return (
     <Overlay
@@ -136,7 +135,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
       <Button
         buttonStyle={styles.button}
         title="Save"
-        onPress={handleUpdateUsers}
+        onPress={handleSave}
         
       />
 
