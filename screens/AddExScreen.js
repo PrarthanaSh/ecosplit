@@ -70,7 +70,7 @@ function AddExScreen({ navigation }) {
     //This code will change based on split options
 
     // dispatch(addExpense(activityKey, carbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
-    console.log(savedUserListWithExpense)
+    console.log("Inside calculateCarbonCost-> showing the udated user list with expense = ", savedUserListWithExpense)
   }
 
   const handleUserListWithExpense = (userList) => {
@@ -80,7 +80,6 @@ function AddExScreen({ navigation }) {
     // console.log(savedUserListWithExpense)
   };
 
-  console.log()
 
   return (
     // <KeyboardAvoidingView
