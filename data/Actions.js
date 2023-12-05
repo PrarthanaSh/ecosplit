@@ -5,7 +5,7 @@ import { firebaseConfig } from '../Secrets';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER } from "./Reducer"
+import { LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER, UPDATE_USER } from "./Reducer"
 
 const addExpense = (newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags) => {
   return async (dispatch) => {
@@ -72,21 +72,38 @@ const addGroup = (newGroupName, newMembers) => {
 // }
 
 const updateGroup = (item, newGroupName, newMembers) => {
-    return async (dispatch) => {
-        await updateDoc(doc(db, 'groups', item.key), {
-          groupName: newGroupName, 
-          members: newMembers
-        });
-        dispatch({
-          type: UPDATE_GROUP,
-          payload: {
-            groupName: newGroupName,
-            members: newMembers, // users
-            key: item.key,
+  return async (dispatch) => {
+    await updateDoc(doc(db, 'groups', item.key), {
+      groupName: newGroupName,
+      members: newMembers
+    });
+    dispatch({
+      type: UPDATE_GROUP,
+      payload: {
+        groupName: newGroupName,
+        members: newMembers, // users
+        key: item.key,
       }
     });
   }
 }
+
+const updateUser = (item, updatedUser) => {
+  return async (dispatch) => {
+    await updateDoc(doc(db, 'users', item.key), {
+      ...updatedUser
+    });
+    console.log("saving users to firease")
+    dispatch({
+      type: UPDATE_USER,
+      payload: {
+        key: item.key,
+        updatedUser: { expense: 300 } // new expense value
+      }
+    });
+  }
+}
+
 
 
 // const deleteExpense = (contact) => {
@@ -102,7 +119,7 @@ const updateGroup = (item, newGroupName, newMembers) => {
 // }
 
 const deleteGroup = (item) => {
-    return async (dispatch) => {
+  return async (dispatch) => {
     await deleteDoc(doc(db, 'groups', item.key));
     dispatch({
       type: DELETE_GROUP,
@@ -194,7 +211,7 @@ const loadUsers = () => {
 //   }
 
 
-export { loadActivities, loadGroups, loadUsers, addGroup, updateGroup, deleteGroup, addExpense, addUser}
+export { loadActivities, loadGroups, loadUsers, addGroup, updateGroup, deleteGroup, addExpense, addUser, updateUser }
 
 
 
