@@ -64,10 +64,12 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
     setSelectedSplitOption(item.value);
   };
 
-  const handleSave = (userListWithExpense) => {
-    // Assuming userListWithExpense is prepared and ready to be sent
+  const handleSave = () => {
+    const userListWithExpense = usersInGroup.map(obj => {
+      return { ...obj, expense: totalExpense/userNum };
+    });
+  
     onSaveUserListWithExpense(userListWithExpense);
-    // You can also handle closing the overlay or other actions here
   };
 
 
@@ -100,8 +102,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
           <TextInput
             style={styles.inputBox}
             value={expenseAmt}
-            onChangeText={(text) => {setExpenseAmt(text)
-              console.log(userListwithExpense)}}
+            onChangeText={(text) => {setExpenseAmt(text)}}
             placeholder='0.00'
           // disabled='true'
           />
@@ -135,7 +136,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
       <Button
         buttonStyle={styles.button}
         title="Save"
-        onPress={() => onSaveUserListWithExpense(userListwithExpense)}
+        onPress={handleSave}
         
       />
 
