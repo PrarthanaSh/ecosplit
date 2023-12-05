@@ -16,6 +16,7 @@ function AddExScreen({ navigation }) {
   useEffect(() => {
     dispatch(loadActivities());
     dispatch(loadGroups());
+    console.log(savedUserListWithExpense)
   }, []);
 
 
@@ -30,6 +31,7 @@ function AddExScreen({ navigation }) {
   const [selectedTags, setSelectedTags] = useState('');
   const [activityTags, setActivityTags] = useState('');
   const [carbonCost, setCarbonCost] = useState('');
+  const [savedUserListWithExpense, setSavedUserListWithExpense] = useState(null);
 
   //Modal component
   const isDisabled = !selectedActivityType;
@@ -70,6 +72,15 @@ function AddExScreen({ navigation }) {
     dispatch(addExpense(activityKey, carbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
 
   }
+
+  const handleUserListWithExpense = (userList) => {
+    // Process or save userList in the state of AddExScreen
+    // For example:
+    setSavedUserListWithExpense(userList)
+    console.log(savedUserListWithExpense)
+  };
+
+  console.log()
 
   return (
     // <KeyboardAvoidingView
@@ -207,6 +218,8 @@ function AddExScreen({ navigation }) {
           selectedActivityType={selectedActivityType}
           expenseAmt={expenseAmt}
           setExpenseAmt={setExpenseAmt}
+          onSaveUserListWithExpense={handleUserListWithExpense}
+          
         />}
       </View>
     </ScrollView>
