@@ -1,74 +1,163 @@
 import { useState, useEffect } from 'react';
-import { View, Modal, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Modal, Text, StyleSheet, TextInput, FlatList } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Icon, Button } from '@rneui/themed';
+import { Overlay } from 'react-native-elements';
+import { loadUsers, updateUser } from '../data/Actions';
+import { useDispatch, useSelector } from 'react-redux';
 
-const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType}) => {
+const addOrSelectChat = (user1id, user2id) => {
+
+  // return async (dispatch) => {
+
+  //   const chatQuery = query(collection(db, 'chats'),
+  //     where('participants', 'array-contains', user1id),
+  //   );
+  //   const results = await getDocs(chatQuery);
+  //   /*
+  //     Ideally we would do this:
+  //     const chatQuery = query(
+  //       collection(db, 'chats'),
+  //       where('participants', 'array-contains', user1id),
+  //       where('participants', 'array-contains', user2id)
+  //     );
+  //     but Firestore doesn't allow more than one 'array-contains'
+  //     where clauses in a single query. So instead we do the 
+  //     second 'array-contains' clause "manually"
+  //   );
+  //   */
+  //   chatSnap = results.docs?.find(
+  //     elem => elem.data().participants.includes(user2id));
+  //   let theChat;
+
+  // }
+}
+const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType }) => {
   const isFocus = true
-  const [selectedValue, setSelectedValue] = useState(null);
-  const taglist = [
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },]
+  const [selectedSplitOption, setSelectedSplitOption] = useState(null);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(true); 
+  const splitOptions = [
+    { value: "Split Evenly", },
+    { value: "Split With Percentage", },
+  ]
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
+  const userList = useSelector((state) => state.listUsers);
+  const usersInGroup = selectedGroup
+    ? userList.filter(user => selectedGroup.members.includes(user.key))
+    : [];
+  const userNum = usersInGroup.length
+  const totalExpense = selectedActivityType.carbonCost
+  const userListwithExpense = usersInGroup.map(obj => {
+    return { ...obj, expense: totalExpense/userNum};
+  })
 
-  useEffect(()=>{
-    console.log('Activity Type (im inside modal) updated:', selectedActivityType)
-  }, [])
+  // console.log(userListwithExpense)
+  // console.log("users:", userList)
+  // console.log('group (im inside modal) updated:', selectedGroup)
+  // console.log("filtered-----", usersInGroup)
+  // console.log(selectedActivityType)
 
   const handleDropdownChange = (item) => {
-    setSelectedValue(item.value);
+    setSelectedSplitOption(item.value);
   };
+
+  const handleUpdateUsers = () => {
+    userList.forEach(user => {
+      const updatedUser = { ...userListwithExpense }; 
+      dispatch(updateUser(userList, updatedUser));
+    });
+    setIsOverlayVisible(false);
+  };
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={onClose}
+    <Overlay
+      isVisible={isVisible}
+      onBackdropPress={onClose} // Close overlay when backdrop is pressed
+      overlayStyle={styles.overlayStyle} // Custom style for overlay
     >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Split Expense: {selectedActivityType.name}</Text>
-          <View style={styles.inputContainer}>
-            <Dropdown
-            style={[styles.dropdown]}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
-            iconStyle={styles.iconStyle}
-            labelField="label"
-            valueField="value"
+      <Text style={[styles.modalText, { fontSize: 20, paddingBottom: 10 }]}>Split Expense: {selectedActivityType.name}</Text>
+      <View style={styles.inputContainer}>
+        <Dropdown
+          style={[styles.dropdown]}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+          iconStyle={styles.iconStyle}
+          labelField="value"
+          valueField="value"
+          data={splitOptions}
+          laceholder={!isFocus ? 'Splitting Evenly' : '...'}
+          onChange={handleDropdownChange}
+          value={selectedSplitOption}
 
-            data={taglist}
-            laceholder={!isFocus ? 'Splitting Options' : '...'}
-            onChange={handleDropdownChange}
-            value={selectedValue}
-
-            />  
-          </View>
-          <View style={styles.groupMember}>
-            <Icon
-            name='user'
-            type='font-awesome'
-          />
-          <Text style={styles.modalText}>You</Text>
-          <TextInput
-          style={styles.inputBox}
-          // value={expense}
-          // onChangeText={(text) => setExpense(text)}
-          placeholder='0.00'
-          />
-          </View>
-          
-          <Button
-            buttonStyle={styles.button}
-            title="Save" 
-            onPress={onClose} />
-        </View>
+        />
       </View>
-    </Modal>
+
+      {userListwithExpense && <FlatList
+        data={userListwithExpense}
+        renderItem={({ item }) => {
+          return (
+            // <Text>{console.log(item)}</Text>
+            <SplitEvenly item={item} />
+          );
+        }}
+      />
+      }
+
+      {/* <View style={styles.groupMember}>
+            <Icon
+              name='user'
+              type='font-awesome'
+            />
+            <Text style={styles.modalText}>You</Text>
+            <TextInput
+              style={styles.inputBox}
+              // value={expense}
+              // onChangeText={(text) => setExpense(text)}
+              placeholder='0.00'
+            />
+          </View> */}
+
+      <Button
+        buttonStyle={styles.button}
+        title="Save"
+        onPress={handleUpdateUsers}
+      />
+
+    </Overlay>
   );
 };
 
+function SplitEvenly({ item }) {
+
+  return <View style={styles.groupMember}>
+    <Icon
+      name='user'
+      type='font-awesome'
+    />
+    {/* {console.log(item)} */}
+    <Text style={styles.modalText}>{item.displayName}</Text>
+    <TextInput
+      style={styles.inputBox}
+      value={String(item.expense)}
+      // onChangeText={(text) => setExpense(text)}
+      placeholder='0.00'
+    />
+  </View>
+
+}
+
 const styles = StyleSheet.create({
+  overlayStyle: {
+    width: "90%",
+    height: "75%",
+    // backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark background
+    borderRadius: 20,
+    // padding: 20,
+  },
   inputContainer: {
     width: "100%",
   },
@@ -79,6 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     width: '100%',
+    marginBottom: 20,
   },
   placeholderStyle: {
     fontSize: 16,
@@ -88,7 +178,7 @@ const styles = StyleSheet.create({
   },
   selectedTextStyle: {
     fontSize: 20,
-    color:"black"
+    color: "black"
   },
   iconStyle: {
     width: 20,
@@ -98,35 +188,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    // marginTop: 22
   },
   modalView: {
-    width: "85%",
-    margin: 10,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
+    width: "80%",
+    padding: 15,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
+
   },
   modalText: {
     // marginBottom: 15,
-    textAlign: "center"
+    marginTop: 15,
+    textAlign: "center",
+    marginVertical: 10,
   },
-  groupMember:{
+  groupMember: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: "100%",
+    width: "90%",
     paddingLeft: "2%",
-    margin: "5%",
+    paddingRight: "2%",
+    marginHorizontal: "5%",
+    // margin: "5%",
   },
   inputBox: {
     width: '40%',
@@ -139,6 +223,7 @@ const styles = StyleSheet.create({
     marginVertical: '3%'
   },
   button: {
+    textAlign: 'center',
     backgroundColor: 'mediumseagreen',
     borderRadius: 40,
     padding: 12,

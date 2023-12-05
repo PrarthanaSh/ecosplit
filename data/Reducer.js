@@ -10,6 +10,7 @@ const UPDATE_GROUP = 'UPDATE_GROUP';
 const DELETE_GROUP = 'DELETE_GROUP';
 const ADD_USER = 'ADD_USER';
 const ADD_EXPENSE = 'ADD_EXPENSE';
+const UPDATE_USER = 'UPDATE_USER';
 
 // const LOAD_GROUPS = 'LOAD_GROUPS';
 
@@ -185,6 +186,15 @@ const loadUsers = (state, users) => {
     listUsers: [...users]
   }
 }
+
+const updateUsers = (state, key, updatedUser) => {
+  let { listUsers } = state;
+  let newUsers = listUsers.map(user => user.key === key ? { ...user, ...updatedUser } : user);
+  return {
+    ...state,
+    listUsers: newUsers
+  };
+}
 // const loadGroups = (state, groups) => {
 
 //   return {
@@ -310,6 +320,8 @@ function rootReducer(state = initialState, action) {
       return deleteGroup(state, payload.key);
     case ADD_USER:
       return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newExpense, payload.key);
+    case UPDATE_USER:
+      return updateUser(state, payload.key, payload.updatedUser);
     case ADD_EXPENSE:
       return addExpense(state, action.payload.newActivityType, action.payload.newCarbonCost, action.payload.newGroup, action.payload.newExpenseAmt, action.payload.newSplit, action.payload.newTags, payload.key);
     // case UPDATE_GROUP:
@@ -330,5 +342,5 @@ function rootReducer(state = initialState, action) {
 }
 
 export {
-  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER
+  rootReducer, LOAD_ACTIVITIES, LOAD_GROUPS, LOAD_USERS, ADD_GROUP, UPDATE_GROUP, DELETE_GROUP, ADD_EXPENSE, ADD_USER, UPDATE_USER
 };
