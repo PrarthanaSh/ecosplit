@@ -68,7 +68,7 @@ function DetailsScreen(props) {
         <Button
           title='Cancel'
           onPress={() => {
-            navigation.navigate('Groups'); // not going back to Groups screen
+            navigation.navigate('GroupsHome');
           }}
           buttonStyle={styles.cancel}
         />
@@ -80,7 +80,7 @@ function DetailsScreen(props) {
             } else {
               dispatch(updateGroup(item, groupName, selectedMembers));
             }
-            navigation.navigate('Groups'); // not navigating back to groups screen
+            navigation.navigate('GroupsHome');
           }}
           buttonStyle={styles.save}
         />

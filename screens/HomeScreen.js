@@ -5,32 +5,20 @@ import { firebaseConfig } from '../Secrets';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { getDoc, getFirestore, collection, query, getDocs } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, collection, query, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 function HomeScreen({navigation}) {
 
-  // const userExpenseAmount = getAuthUser().displayName
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   const [userExpenses, setUserExpenses] = useState('');
-  // const userId = getAuthUser().id;
-  const userId = 'yZ36FCjM5zEBTK1IbSEV';
+  const [carbonEmission, setCarbonEmission] = useState('');
+  const userId = getAuthUser().uid;
   
   async function loadOneExpense () {
-    // const collRef = collection(db, 'users', userId);
-    // const q = query(collRef);
-    // const querySnapshot = await getDocs(q);
 
-    // // let expensesData = [];
-    // let expensesData = querySnapshot.doc
-
-    // // querySnapshot.forEach((doc) => {
-    // //   expensesData.push(doc.data());
-    // // });
-
-    // setUserExpenses(expensesData);
     const collRef = collection(db, 'users');
     const docRef = doc(collRef, userId);
 
@@ -39,13 +27,14 @@ function HomeScreen({navigation}) {
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
       const userExpense = userData.expense;
-      
-      console.log('User Expense:', userExpense);
+      const carbonEmission = userData.carbonCost;
 
-      setUserExpenses(userExpense); // not showing up
+      setUserExpenses(userExpense); 
+      setCarbonEmission(carbonEmission);
     } else {
       // Handle the case where the document doesn't exist
-      setUserExpenses('nothing');
+      setUserExpenses('Nothing');
+      setCarbonEmission('Null');
     }
   }
 
@@ -58,13 +47,15 @@ function HomeScreen({navigation}) {
       {/* Expenses Subject */}
       <Text style={styles.expenseSubject}>Expenses</Text>
 
+      {/* Carbon Emission */}
+      <Text style={styles.carbonEmission}>Total carbon emissions are {carbonEmission} g</Text>
+
       {/* Expense Amount */}
-      <Text style={styles.expenseAmount}>$ {userExpenses}</Text>
+      <Text style={styles.expenseAmount}>Total expenses are $ {userExpenses}</Text>
 
       {/* Image */}
       <Image
-        source={require('../assets/green.jpeg')} // Replace with the path to your image
-        // source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}}
+        source={require('../assets/green.jpeg')}
         style={styles.image}
         resizeMode="cover"
       />
@@ -102,6 +93,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'grey',
     marginBottom: 5,
+  },
+  carbonEmission: {
+    fontSize: 24,
+    marginBottom: 15,
   },
   expenseAmount: {
     fontSize: 16,
