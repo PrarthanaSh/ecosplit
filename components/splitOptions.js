@@ -6,39 +6,12 @@ import { Overlay } from 'react-native-elements';
 import { loadUsers, updateUser } from '../data/Actions';
 import { useDispatch, useSelector } from 'react-redux';
 
-const addOrSelectChat = (user1id, user2id) => {
-
-  // return async (dispatch) => {
-
-  //   const chatQuery = query(collection(db, 'chats'),
-  //     where('participants', 'array-contains', user1id),
-  //   );
-  //   const results = await getDocs(chatQuery);
-  //   /*
-  //     Ideally we would do this:
-  //     const chatQuery = query(
-  //       collection(db, 'chats'),
-  //       where('participants', 'array-contains', user1id),
-  //       where('participants', 'array-contains', user2id)
-  //     );
-  //     but Firestore doesn't allow more than one 'array-contains'
-  //     where clauses in a single query. So instead we do the 
-  //     second 'array-contains' clause "manually"
-  //   );
-  //   */
-  //   chatSnap = results.docs?.find(
-  //     elem => elem.data().participants.includes(user2id));
-  //   let theChat;
-
-  // }
-}
-const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, onSaveUserListWithExpense }) => {
+const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, onSaveUserListWithExpense, tagsAdjustment }) => {
   const isFocus = true
   const [selectedSplitOption, setSelectedSplitOption] = useState(null);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(true); 
   const splitOptions = [
-    { value: "Split Evenly", },
-    { value: "Split With Percentage", },
+    { name: "Split Evenly", value: 1 },
+    { name: "Split With Percentage", value: 2 },
   ]
   const dispatch = useDispatch();
   useEffect(() => {
@@ -51,25 +24,21 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
   const userNum = usersInGroup.length
   const totalExpense = expenseAmt
   const userListwithExpense = usersInGroup.map(obj => {
-    return { ...obj, expense: totalExpense/userNum};
+    return { ...obj, expense: totalExpense / userNum };
   })
-
-  
-  // console.log("users:", userList)
-  // console.log('group (im inside modal) updated:', selectedGroup)
-  // console.log("filtered-----", usersInGroup)
-  // console.log(selectedActivityType)
+  const tagsCalc = tagsAdjustment;
 
   const handleDropdownChange = (item) => {
     setSelectedSplitOption(item.value);
   };
 
-  const handleSave = () => {
-    const userListWithExpense = usersInGroup.map(obj => {
-      return { ...obj, expense: totalExpense/userNum };
+  const handleSave = (userListWithExpense, tagsCalc) => {
+    const currCarbonCost = Number(selectedActivityType.carbonCost) + 2 * Number(expenseAmt) + tagsCalc;
+    const userListWithExpenseandCarbon = userListWithExpense.map(obj => {
+      return { ...obj, carbonCost: currCarbonCost / userNum };
     });
-  
-    onSaveUserListWithExpense(userListWithExpense);
+    onSaveUserListWithExpense(userListWithExpenseandCarbon);
+    onClose();
   };
 
 
@@ -87,57 +56,42 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
           iconStyle={styles.iconStyle}
-          labelField="value"
+          labelField="name"
           valueField="value"
           data={splitOptions}
           placeholder={!isFocus ? 'Splitting Evenly' : '...'}
-          onChange={handleDropdownChange}
+          onChange={() => { handleDropdownChange }}
           value={selectedSplitOption}
-
         />
       </View>
 
       <View style={styles.inputContainer}>
-          <Text style={styles.labelText}>Expense Amount</Text>
-          <TextInput
-            style={styles.inputBox}
-            value={expenseAmt}
-            onChangeText={(text) => {setExpenseAmt(text)}}
-            placeholder='0.00'
-          // disabled='true'
-          />
-        </View>
+        <Text style={styles.labelText}>Expense Amount</Text>
+        <TextInput
+          style={[styles.inputBox, { width: '100%' }]}
+          value={expenseAmt}
+          onChangeText={(text) => { setExpenseAmt(text) }}
+          placeholder='0.00'
+        />
+      </View>
 
       {userListwithExpense && <FlatList
         data={userListwithExpense}
         renderItem={({ item }) => {
           return (
-            // <Text>{console.log(item)}</Text>
             <SplitEvenly item={item} />
           );
         }}
       />
       }
 
-      {/* <View style={styles.groupMember}>
-            <Icon
-              name='user'
-              type='font-awesome'
-            />
-            <Text style={styles.modalText}>You</Text>
-            <TextInput
-              style={styles.inputBox}
-              // value={expense}
-              // onChangeText={(text) => setExpense(text)}
-              placeholder='0.00'
-            />
-          </View> */}
-
       <Button
         buttonStyle={styles.button}
         title="Save"
-        onPress={handleSave}
-        
+        onPress={() => {
+          handleSave(userListwithExpense, tagsCalc)
+          console.log("Inside SplitOptions Screen->tagsCalc = ", tagsCalc);
+        }}
       />
 
     </Overlay>
@@ -151,25 +105,39 @@ function SplitEvenly({ item }) {
       name='user'
       type='font-awesome'
     />
-    {/* {console.log(item)} */}
     <Text style={styles.modalText}>{item.displayName}</Text>
     <TextInput
       style={styles.inputBox}
       value={String(item.expense)}
-      // onChangeText={(text) => setExpense(text)}
       placeholder='0.00'
     />
   </View>
 
 }
 
+//This is for displaying percentages 
+function SplitPercentages({ item }) {
+  return <View style={styles.groupMember}>
+    <Icon
+      name='user'
+      type='font-awesome'
+    />
+    <Text style={styles.modalText}>{item.displayName}</Text>
+    <TextInput
+      style={styles.inputBox}
+      value={String(item.expense)}
+      placeholder='0.00'
+    />
+  </View>
+}
+//This is for displaying percentages 
+
+
 const styles = StyleSheet.create({
   overlayStyle: {
     width: "90%",
     height: "75%",
-    // backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark background
     borderRadius: 20,
-    // padding: 20,
   },
   inputContainer: {
     width: "100%",
@@ -186,7 +154,6 @@ const styles = StyleSheet.create({
   placeholderStyle: {
     fontSize: 16,
     paddingLeft: '5%',
-    // fontWeight: 300,
     color: 'black'
   },
   selectedTextStyle: {
@@ -201,7 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // marginTop: 22
   },
   modalView: {
     width: "80%",
@@ -210,7 +176,6 @@ const styles = StyleSheet.create({
 
   },
   modalText: {
-    // marginBottom: 15,
     marginTop: 15,
     textAlign: "center",
     marginVertical: 10,
@@ -223,7 +188,6 @@ const styles = StyleSheet.create({
     paddingLeft: "2%",
     paddingRight: "2%",
     marginHorizontal: "5%",
-    // margin: "5%",
   },
   inputBox: {
     width: '40%',
@@ -241,6 +205,18 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     padding: 12,
     width: "100%"
+  },
+  inputContainer: {
+    alignItems: 'flex-start',
+    paddingHorizontal: '5%',
+    paddingVertical: '1%',
+    marginVertical: '2.5%'
+  },
+  labelText:
+  {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'gray'
   },
 });
 
