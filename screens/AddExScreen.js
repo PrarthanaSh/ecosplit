@@ -16,22 +16,23 @@ function AddExScreen({ navigation }) {
   useEffect(() => {
     dispatch(loadActivities());
     dispatch(loadGroups());
-    console.log(savedUserListWithExpense)
+ 
   }, []);
 
 
   const allActivites = useSelector((state) => state.listActivities);
   const allGroups = useSelector((state) => state.listGroups);
-  
+
 
   const [selectedActivityType, setSelectedActivityType] = useState('');
   const [expenseAmt, setExpenseAmt] = useState('');
   const [group, setGroup] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
+  const [overlayVisible, setOverlayVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState('');
   const [activityTags, setActivityTags] = useState('');
   const [carbonCost, setCarbonCost] = useState('');
   const [savedUserListWithExpense, setSavedUserListWithExpense] = useState(null);
+  const [tagsAdjustment, setTagsAdjustment] = useState(0);
 
   //Modal component
   const isDisabled = !selectedActivityType;
@@ -51,36 +52,28 @@ function AddExScreen({ navigation }) {
   });
 
   const calculateCarbonCost = () => {
-    // console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
-    // console.log("Inside calculateCarbonCost->Activity Tags = ", activityTags);
-    const tagsAdjustment = activityTags
+    const currCarbonCost = Number(carbonCost) + 2 * Number(expenseAmt) + Number(activityTags
       .filter(tag => selectedTags.includes(tag.key))
       .map(tag => tag.value)
-      .reduce((sum, value) => sum + value, 0) + carbonCost + (2 * Number(expenseAmt));
-
-    console.log("Inside calculateCarbonCost->tagAdjustment = ", tagsAdjustment);
-    setCarbonCost(tagsAdjustment);
-    const groupKey = (groups_data.find(gr => gr.groupName === group) || {}).key;
-
+      .reduce((sum, value) => sum + value, 0));
+    setCarbonCost(currCarbonCost);
+    const groupKey = group.key;
     const activityKey = selectedActivityType.key;
+    const splitDetails = savedUserListWithExpense.map(({ key, expense, carbonCost }) => ({ userid: key, expense, carbonCost }));
 
-    //This code will change based on split options
-    const splitMembers = groups_data.map(({ members }) => members.map(member => ({ [member]: [1, 5] })));
-    const splitDetails = [].concat(...splitMembers);
-    //This code will change based on split options
+    console.log("Inside calculateCarbonCost->activityKey = ", activityKey);
+    console.log("Inside calculateCarbonCost->carbonCost = ", carbonCost);
+    console.log("Inside calculateCarbonCost->groupKey = ", groupKey);
+    console.log("Inside calculateCarbonCost->expenseAmt = ", expenseAmt);
+    console.log("Inside calculateCarbonCost->SplitDetails = ", splitDetails);
+    console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
 
-    dispatch(addExpense(activityKey, carbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
-
+    // dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
   }
 
   const handleUserListWithExpense = (userList) => {
-    // Process or save userList in the state of AddExScreen
-    // For example:
     setSavedUserListWithExpense(userList)
-    console.log(savedUserListWithExpense)
   };
-
-  console.log()
 
   return (
     // <KeyboardAvoidingView
@@ -114,10 +107,9 @@ function AddExScreen({ navigation }) {
             onChange={(item) => {
               setIsAcFocus(false);
               setSelectedActivityType(item);
-              // console.log('In AddEx screen -> Expense title Dropdown Value:', item);
               setActivityTags(item.tags);
               setSelectedTags([]);
-              setCarbonCost(item.value);
+              setCarbonCost(item.carbonCost);
             }}
             renderLeftIcon={() => (
               <Icon
@@ -153,7 +145,6 @@ function AddExScreen({ navigation }) {
             onChange={(item) => {
               setIsGrFocus(false);
               setGroup(item);
-              // console.log("groups", group)
             }}
             renderLeftIcon={() => (
               <Icon
@@ -177,13 +168,8 @@ function AddExScreen({ navigation }) {
         {/* Container for Expense Amount */}
         <View style={styles.inputContainer}>
           <Text style={styles.labelText}>Expense Amount</Text>
-          <TextInput
-            style={styles.inputBox}
-            value={expenseAmt}
-            onChangeText={(text) => setExpenseAmt(text)}
-            placeholder='0.00'
-          // disabled='true'
-          />
+          <Text
+            style={styles.inputBox}>{expenseAmt}</Text>
         </View>
         {/* Container for Expense Amount */}
 
@@ -192,8 +178,15 @@ function AddExScreen({ navigation }) {
         <View style={styles.buttonContainer}>
           <Button
             title="Split Options"
-            onPress={() => setModalVisible(true)}
-            disabled={!selectedActivityType || !group }
+            onPress={() => {
+              setOverlayVisible(true)
+              setTagsAdjustment(activityTags
+                .filter(tag => selectedTags.includes(tag.key))
+                .map(tag => tag.value)
+                .reduce((sum, value) => sum + value, 0));
+            }
+            }
+            disabled={!selectedActivityType || !group}
             disabledStyle={styles.disabledButton}
             disabledTitleStyle={styles.disabledTitle}
             buttonStyle={isDisabled ? styles.disabledButton : styles.buttonEnabled}
@@ -211,15 +204,16 @@ function AddExScreen({ navigation }) {
         </View>
 
 
-        {selectedActivityType&&group&&<SplitOptionsOverlay
-          isVisible={modalVisible}
-          onClose={() => setModalVisible(false)}
+        {selectedActivityType && group && <SplitOptionsOverlay
+          isVisible={overlayVisible}
+          onClose={() => setOverlayVisible(false)}
           selectedGroup={group}
           selectedActivityType={selectedActivityType}
           expenseAmt={expenseAmt}
           setExpenseAmt={setExpenseAmt}
           onSaveUserListWithExpense={handleUserListWithExpense}
-          
+          tagsAdjustment={tagsAdjustment}
+
         />}
       </View>
     </ScrollView>
