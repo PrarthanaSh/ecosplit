@@ -16,7 +16,7 @@ function AddExScreen({ navigation }) {
   useEffect(() => {
     dispatch(loadActivities());
     dispatch(loadGroups());
-
+ 
   }, []);
 
 
@@ -74,7 +74,6 @@ function AddExScreen({ navigation }) {
   const handleUserListWithExpense = (userList) => {
     setSavedUserListWithExpense(userList)
   };
-
 
   return (
     // <KeyboardAvoidingView
@@ -214,6 +213,7 @@ function AddExScreen({ navigation }) {
           setExpenseAmt={setExpenseAmt}
           onSaveUserListWithExpense={handleUserListWithExpense}
           tagsAdjustment={tagsAdjustment}
+
         />}
       </View>
     </ScrollView>

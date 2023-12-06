@@ -7,6 +7,7 @@ import { loadUsers, updateUser } from '../data/Actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, onSaveUserListWithExpense, tagsAdjustment }) => {
+
   const isFocus = true
   const [selectedSplitOption, setSelectedSplitOption] = useState(null);
   const splitOptions = [
