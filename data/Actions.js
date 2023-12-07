@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { addDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore, setDoc } from 'firebase/firestore';
-
+import { addDoc, setDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore, writeBatch } from 'firebase/firestore';
 import { firebaseConfig } from '../Secrets';
 
 const app = initializeApp(firebaseConfig);
@@ -108,21 +107,79 @@ const updateGroup = (item, newGroupName, newMembers) => {
   }
 }
 
-const updateUser = (item, updatedUser) => {
+const updateUser = (updatatedUserList) => {
   return async (dispatch) => {
-    await updateDoc(doc(db, 'users', item.key), {
-      ...updatedUser
-    });
-    console.log("saving users to firease")
-    dispatch({
-      type: UPDATE_USER,
-      payload: {
-        key: item.key,
-        updatedUser: { expense: 300 } // new expense value
-      }
-    });
+  // try {
+    // see https://firebase.google.com/docs/firestore/quotas#writes_and_transactions
+    // int writeBatchLimit = 500;
+    // const totalUpdates = 0;
+
+    // while (totalUpdates % 500 == 0) {
+      const wb = writeBatch(db);
+      // const documentsInBatch = updatatedUserList.length;
+
+      // WriteBatch writeBatch = this.firestoreDB.batch();
+
+      // List<QueryDocumentSnapshot> documentsInBatch =
+      //     this.firestoreDB.collection("animals")
+      //         .whereEqualTo("species", "cat")
+      //         .limit(writeBatchLimit)
+      //         .get()
+      //         .get()
+      //         .getDocuments();
+
+      // if (documentsInBatch.isEmpty()) {
+      //   break;
+      // }
+
+      updatatedUserList.forEach((user)=> {wb.update(doc(db, 'users', user.key), {
+        carbonCost: user.carbonCost,
+        expense: user.expense
+      })
+      // totalUpdates += documentsInBatch.size();
+      });
+      await wb.commit();
+      console.log("In Actions.js -> updateUser -> Hit Firebase, users updated")
+      console.log("In Actions.js -> sending updatatedUserList to reducer: ", updatatedUserList)
+
+      dispatch({
+        type: UPDATE_USER,
+        payload: {
+          // key: item.key,
+          newUserList: updatatedUserList // sending updated user list
+        }
+      });
+
+    }
   }
-}
+    
+          // document -> );
+
+      
+    // }
+
+    // console.log("Number of updates: " + totalUpdates);
+  
+
+  // } catch (Exception e) {
+  //   return false;
+  // }
+  // return true;
+
+// return async (dispatch) => {
+//     await updateDoc(doc(db, 'users', item.key), {
+//       ...updatedUser
+//     });
+//     console.log("saving users to firease")
+//     dispatch({
+//       type: UPDATE_USER,
+//       payload: {
+//         key: item.key,
+//         updatedUser: { expense: 300 } // new expense value
+//       }
+//     });
+//   }
+
 
 
 

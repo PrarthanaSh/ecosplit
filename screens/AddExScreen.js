@@ -66,7 +66,7 @@ function AddExScreen({ navigation }) {
     console.log("Inside calculateCarbonCost->expenseAmt = ", expenseAmt);
     console.log("Inside calculateCarbonCost->SplitDetails = ", splitDetails);
     console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
-    console.log(savedUserListWithExpense)
+    console.log("Inside calculateCarbonCost->savedUserListWithExpense = ", savedUserListWithExpense);
 
     dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
   }
@@ -75,14 +75,24 @@ function AddExScreen({ navigation }) {
     setSavedUserListWithExpense(userList)
   };
 
-  const updateUerList = () => {
+  const updateUserList = () => {
+    console.log(savedUserListWithExpense.length);
+
+
     savedUserListWithExpense.forEach(user => {
-      dispatch(updateUser(user
-        // add all the parameters need to be updated here
-        ));
+      // dispatch(updateUser(user
+      //   // add all the parameters need to be updated here
+      //   ));
+      console.log("User: ", user.key)
+      console.log("carbonCost: ", user.carbonCost)
+      console.log("Expense: ", user.expense)
     });
+
+    dispatch(updateUser(savedUserListWithExpense));
   }
 
+
+  
   return (
     // <KeyboardAvoidingView
     // behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -207,7 +217,7 @@ function AddExScreen({ navigation }) {
             buttonStyle={styles.save}
             onPress={() => {
               calculateCarbonCost()
-              updateUerList()
+              updateUserList()
             }}
           />
         </View>
