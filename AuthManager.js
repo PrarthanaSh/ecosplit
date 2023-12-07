@@ -53,6 +53,7 @@ const signIn = async (email, password) => {
 const signUp = async (displayName, email, password) => {
   const userCred = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(userCred.user, {displayName: displayName});
+  return userCred.user
 }
 
 const signOut = async () => {

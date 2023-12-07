@@ -7,40 +7,49 @@ import 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { doc, getDoc, getFirestore, collection, query, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { loadUsers } from '../data/Actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 function HomeScreen({navigation}) {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
-  const [userExpenses, setUserExpenses] = useState('');
-  const [carbonEmission, setCarbonEmission] = useState('');
+  const dispatch = useDispatch()
   const userId = getAuthUser().uid;
-  
-  async function loadOneExpense () {
+  // const [userExpenses, setUserExpenses] = useState('');
+  // const [carbonEmission, setCarbonEmission] = useState('');
 
-    const collRef = collection(db, 'users');
-    const docRef = doc(collRef, userId);
+  // async function loadOneExpense () {
 
-    const docSnapshot = await getDoc(docRef);
+  //   const collRef = collection(db, 'users');
+  //   const docRef = doc(collRef, userId);
 
-    if (docSnapshot.exists()) {
-      const userData = docSnapshot.data();
-      const userExpense = userData.expense;
-      const carbonEmission = userData.carbonCost;
+  //   const docSnapshot = await getDoc(docRef);
 
-      setUserExpenses(userExpense); 
-      setCarbonEmission(carbonEmission);
-    } else {
-      // Handle the case where the document doesn't exist
-      setUserExpenses('Nothing');
-      setCarbonEmission('Null');
-    }
-  }
+  //   if (docSnapshot.exists()) {
+  //     const userData = docSnapshot.data();
+  //     const userExpense = userData.expense;
+  //     const carbonEmission = userData.carbonCost;
+
+  //     setUserExpenses(userExpense); 
+  //     setCarbonEmission(carbonEmission);
+  //   } else {
+  //     // Handle the case where the document doesn't exist
+  //     setUserExpenses('Nothing');
+  //     setCarbonEmission('Nothing');
+  //   }
+  // }
 
   useEffect(() => {
-    loadOneExpense();
+    // loadOneExpense();
+    dispatch(loadUsers())
+    console.log("user: ", currentUser, userId)
   }, []);
+
+  const allUsers = useSelector((state) => state.listUsers);
+  console.log(allUsers)
+  const currentUser = allUsers.find(user => user.key === userId)
+
 
   return (
     <View style={styles.container}>
@@ -48,10 +57,10 @@ function HomeScreen({navigation}) {
       <Text style={styles.expenseSubject}>Expenses</Text>
 
       {/* Carbon Emission */}
-      <Text style={styles.carbonEmission}>Total carbon emissions are {carbonEmission} g</Text>
+      <Text style={styles.carbonEmission}>Total carbon emissions are {} g</Text>
 
       {/* Expense Amount */}
-      <Text style={styles.expenseAmount}>Total expenses are $ {userExpenses}</Text>
+      <Text style={styles.expenseAmount}>Total expenses are $ {}</Text>
 
       {/* Image */}
       <Image

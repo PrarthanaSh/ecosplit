@@ -264,18 +264,26 @@ const deleteGroup = (state, key) => {
   }
 }
 
-const addUser = (state, newDisplayName, newEmail, newExpense, key) => {
-  let { listUsers } = state;
-  let newUsers = listUsers.concat({
-    displayName: newDisplayName,
-    email: newEmail,
-    expense: newExpense,
-    key: key
-  });
+// const addUser = (state, newDisplayName, newEmail, key) => {
+//   let { listUsers } = state;
+//   let newUsers = listUsers.concat({
+//     displayName: newDisplayName,
+//     email: newEmail,
+//     // expense: 0,
+//     // carbonCost: 0,
+//     key: key
+//   });
+//   return {
+//     ...state,
+//     listUsers: newUsers
+//   };
+// }
+
+const addUser = (state, payload) => {
   return {
-    ...state,
-    listUsers: newUsers
-  };
+    ...state, 
+    listUsers: state.listUsers.concat({...payload.listUsers})
+  }
 }
 
 const addExpense = (state, newActivityType, newCarbonCost, newGroup, newExpenseAmt, newSplit, newTags, key) => {
@@ -326,7 +334,8 @@ function rootReducer(state = initialState, action) {
     case DELETE_GROUP:
       return deleteGroup(state, payload.key);
     case ADD_USER:
-      return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newExpense, payload.key);
+      // return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newExpense, payload.key);
+      return addUser(state, action.payload)
     case UPDATE_USER:
       return updateUser(state, payload.newUserList);
     case ADD_EXPENSE:
