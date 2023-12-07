@@ -6,9 +6,8 @@ import { Icon, Button } from '@rneui/themed';
 import SplitOptionsOverlay from "../components/splitOptions";
 import TagsDisplay from "../components/TagsDisplay";
 import { useSelector, useDispatch } from "react-redux";
-import { addExpense, loadActivities, loadGroups } from "../data/Actions";
+import { addExpense, loadActivities, loadGroups, updateUser} from "../data/Actions";
 
-import { getAuthUser, signOut } from '../AuthManager'; //Need to add the expense for the user
 
 function AddExScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -69,7 +68,7 @@ function AddExScreen({ navigation }) {
     console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
     console.log(savedUserListWithExpense)
 
-    // dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
+    dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
   }
 
   const handleUserListWithExpense = (userList) => {
