@@ -67,13 +67,22 @@ function AddExScreen({ navigation }) {
     console.log("Inside calculateCarbonCost->expenseAmt = ", expenseAmt);
     console.log("Inside calculateCarbonCost->SplitDetails = ", splitDetails);
     console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
+    console.log(savedUserListWithExpense)
 
-    dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
+    // dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
   }
 
   const handleUserListWithExpense = (userList) => {
     setSavedUserListWithExpense(userList)
   };
+
+  const updateUerList = () => {
+    savedUserListWithExpense.forEach(user => {
+      dispatch(updateUser(user
+        // add all the parameters need to be updated here
+        ));
+    });
+  }
 
   return (
     // <KeyboardAvoidingView
@@ -199,6 +208,7 @@ function AddExScreen({ navigation }) {
             buttonStyle={styles.save}
             onPress={() => {
               calculateCarbonCost()
+              updateUerList()
             }}
           />
         </View>
