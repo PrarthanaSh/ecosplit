@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   //   width: '100%',
   // },
   memberContainer: {
+    flex: 0.6,
     justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
