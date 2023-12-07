@@ -68,7 +68,7 @@ function AddExScreen({ navigation }) {
     console.log("Inside calculateCarbonCost->SplitDetails = ", splitDetails);
     console.log("Inside calculateCarbonCost->Selected Tags = ", selectedTags);
 
-    // dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
+    dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
   }
 
   const handleUserListWithExpense = (userList) => {
