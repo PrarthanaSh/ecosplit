@@ -89,7 +89,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
 
 
   // save data to AddExScreen
-  const handleSave = (userListWithExpenseandCarbonSplitEvenly, usersInGroup, selectedSplitOption) => {
+  const handleSave = (userListWithExpenseandCarbonSplitEvenly, selectedSplitOption, usersInGroup) => {
     const userListwithExpenseSplitPercentage = usersInGroup.map(user => {
       const percentageObj = splitPercentages.find(obj => obj.key === user.key);
       const userExpense = percentageObj
@@ -182,8 +182,7 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
         buttonStyle={styles.button}
         title="Save"
         onPress={() => {
-          handleSave(userListWithExpenseandCarbonSplitEvenly, userListwithExpenseSplitPercentage, selectedSplitOption)
-
+          handleSave(userListWithExpenseandCarbonSplitEvenly, selectedSplitOption, usersInGroup)
         }}
         disabled={selectedSplitOption === 2 && totalPercentage !== 100}
       />
