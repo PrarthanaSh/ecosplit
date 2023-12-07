@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { addDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore } from 'firebase/firestore';
+import { addDoc, updateDoc, deleteDoc, getDocs, doc, collection, getFirestore, setDoc } from 'firebase/firestore';
 
 import { firebaseConfig } from '../Secrets';
 
@@ -26,17 +26,37 @@ const addExpense = (newActivityType, newCarbonCost, newGroup, newExpenseAmt, new
   }
 }
 
-const addUser = (newDisplayName, newEmail, newExpense) => {
+// const addUser = (newDisplayName, newEmail) => {
+//   return async (dispatch) => {
+//     const docRef = await addDoc(collection(db, 'users'), {
+//       displayName: newDisplayName, email: newEmail, expense: 0, carbonCost: 0,
+//     });
+//     const id = docRef.id;
+//     dispatch({
+//       type: ADD_USER,
+//       payload: {
+//         newDisplayName: newDisplayName,
+//         newEmail: newEmail, // users
+//         key: id,
+//       }
+//     });
+//   }
+// }
+
+const addUser = (user) => {
   return async (dispatch) => {
-    const docRef = await addDoc(collection(db, 'users'), { displayName: newDisplayName, email: newEmail, expense: newExpense });
-    const id = docRef.id;
+    userToAdd = {
+      displayName: user.displayName,
+      email: user.email,
+      key: user.uid,
+      expense: 0, 
+      carbonCost: 0,
+    };
+    await setDoc(doc(db, 'users', user.uid), userToAdd);
     dispatch({
       type: ADD_USER,
       payload: {
-        newDisplayName: newDisplayName,
-        newEmail: newEmail, // users
-        newExpense: newExpense,
-        key: id,
+        listUsers: {...userToAdd}
       }
     });
   }

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import { Button } from '@rneui/themed';
-
+import { addUser } from '../data/Actions';
 import { signIn, signUp, subscribeToAuthChanges } from '../AuthManager';
 import { useDispatch } from 'react-redux';
 
@@ -68,6 +68,8 @@ function SignupBox({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+
+  const dispatch = useDispatch()
 
   return (
     <View style={styles.loginContainer}>
