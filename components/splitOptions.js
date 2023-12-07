@@ -7,38 +7,107 @@ import { loadUsers, updateUser } from '../data/Actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivityType, expenseAmt, setExpenseAmt, onSaveUserListWithExpense, tagsAdjustment }) => {
-
   const isFocus = true
-  const [selectedSplitOption, setSelectedSplitOption] = useState(null);
-  const splitOptions = [
-    { name: "Split Evenly", value: 1 },
-    { name: "Split With Percentage", value: 2 },
-  ]
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(loadUsers());
   }, []);
+
+  // set split options
+  const [selectedSplitOption, setSelectedSplitOption] = useState(1);
+  const splitOptions = [
+    { name: "Split Evenly", value: 1 },
+    { name: "Split With Percentage", value: 2 },
+  ]
+
+  // prepare user list using keys in group.members
   const userList = useSelector((state) => state.listUsers);
   const usersInGroup = selectedGroup
     ? userList.filter(user => selectedGroup.members.includes(user.key))
     : [];
+
+  // calculations
   const userNum = usersInGroup.length
   const totalExpense = expenseAmt
-  const userListwithExpense = usersInGroup.map(obj => {
-    return { ...obj, expense: totalExpense / userNum };
-  })
   const tagsCalc = tagsAdjustment;
+  const currCarbonCost = Number(selectedActivityType.carbonCost) + 2 * Number(expenseAmt) + tagsCalc;
 
-  const handleDropdownChange = (item) => {
-    setSelectedSplitOption(item.value);
+  // SplitEvenly
+  const userListWithExpenseandCarbonSplitEvenly = usersInGroup.map(obj => {
+    return {
+      ...obj,
+      expense: totalExpense / userNum,
+      carbonCost: currCarbonCost / userNum
+    };
+  });
+
+  // Split with %
+  const [splitPercentages, setSplitPercentages] = useState(null)
+  const [totalPercentage, setTotalPercentage] = useState(0);
+
+  useEffect(() => {
+    if (selectedSplitOption === 2) {
+      const newPercentages = usersInGroup.map(user => ({
+        displayName: user.displayName,
+        key: user.key,
+        percentage: ""
+      }));
+      setSplitPercentages(newPercentages);
+    } else {
+      setSplitPercentages([]);
+    }
+  }, [selectedSplitOption]);
+
+  const handlePercentageChange = (key, newPercentage) => {
+    setSplitPercentages(prevData => prevData.map(item =>
+      item.key === key ? { ...item, percentage: newPercentage } : item
+    ));
   };
 
-  const handleSave = (userListWithExpense, tagsCalc) => {
-    const currCarbonCost = Number(selectedActivityType.carbonCost) + 2 * Number(expenseAmt) + tagsCalc;
-    const userListWithExpenseandCarbon = userListWithExpense.map(obj => {
-      return { ...obj, carbonCost: currCarbonCost / userNum };
-    });
-    onSaveUserListWithExpense(userListWithExpenseandCarbon);
+  useEffect(() => {
+    if (splitPercentages) {
+      const newTotal = splitPercentages.reduce((sum, obj) => {
+        return sum + parseFloat(obj.percentage || 0);
+      }, 0);
+      setTotalPercentage(newTotal);
+    }
+  }, [splitPercentages]);
+
+  const handleInputChange = (text, item) => {
+    if (text === '') {
+      handlePercentageChange(item.key, '');
+      return;
+    }
+    // Parse the input to a number
+    const numericValue = parseFloat(text);
+    // Check if the value is a number and less than or equal to 100
+    if (!isNaN(numericValue) && numericValue <= 100) {
+      handlePercentageChange(item.key, text);
+    }
+  };
+
+  const userListwithExpenseSplitPercentage = usersInGroup.map(user => {
+    const percentageObj = splitPercentages.find(obj => obj.key === user.key);
+    const userExpense = percentageObj
+      ? totalExpense * (parseFloat(percentageObj.percentage) * 0.01)
+      : 0; // Default to 0 if no percentage found
+    const userCarbonCost = percentageObj
+      ? currCarbonCost * (parseFloat(percentageObj.percentage) * 0.01)
+      : 0; // Default to 0 if no percentage found
+    return {
+      ...user,
+      expense: userExpense,
+      carbonCost: userCarbonCost,
+    };
+  });
+
+  // save data to AddExScreen
+  const handleSave = (userListWithExpenseandCarbonSplitEvenly, userListwithExpenseSplitPercentage, selectedSplitOption) => {
+    if (selectedSplitOption === 1) {
+      onSaveUserListWithExpense(userListWithExpenseandCarbonSplitEvenly);
+    } else if (selectedSplitOption ===2 ){
+      onSaveUserListWithExpense(userListwithExpenseSplitPercentage)
+    }
     onClose();
   };
 
@@ -61,8 +130,9 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
           valueField="value"
           data={splitOptions}
           placeholder={!isFocus ? 'Splitting Evenly' : '...'}
-          onChange={() => { handleDropdownChange }}
+          onChange={(item) => { setSelectedSplitOption(item.value) }}
           value={selectedSplitOption}
+
         />
       </View>
 
@@ -75,24 +145,46 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
           placeholder='0.00'
         />
       </View>
+      {/* Warning message for Split With Percentage option */}
+      {totalPercentage !== 100 && selectedSplitOption === 2 && (
+        <Text style={styles.warningText}>
+          Warning: Percentages do not add up to 100% (Current total: {totalPercentage}%)
+        </Text>
+      )}
 
-      {userListwithExpense && <FlatList
-        data={userListwithExpense}
-        renderItem={({ item }) => {
-          return (
+      {/* List for Split Evenly option */}
+      {userListWithExpenseandCarbonSplitEvenly && selectedSplitOption === 1 && (
+        <FlatList
+          data={userListWithExpenseandCarbonSplitEvenly}
+          keyExtractor={(item) => item.key}
+          renderItem={({ item }) => (
             <SplitEvenly item={item} />
-          );
-        }}
-      />
-      }
+          )}
+        />
+      )}
 
+      {/* List for Split With Percentage option */}
+      {selectedSplitOption === 2 && (
+        <FlatList
+          data={splitPercentages}
+          renderItem={({ item }) => (
+            <SplitPercentages
+              item={item}
+              handlePercentageChange={handlePercentageChange}
+              handleInputChange={handleInputChange}
+
+            />
+          )}
+        />
+      )}
       <Button
         buttonStyle={styles.button}
         title="Save"
         onPress={() => {
-          handleSave(userListwithExpense, tagsCalc)
-          console.log("Inside SplitOptions Screen->tagsCalc = ", tagsCalc);
+          handleSave(userListWithExpenseandCarbonSplitEvenly, userListwithExpenseSplitPercentage, selectedSplitOption)
+
         }}
+        disabled={selectedSplitOption === 2 && totalPercentage !== 100}
       />
 
     </Overlay>
@@ -115,21 +207,29 @@ function SplitEvenly({ item }) {
   </View>
 
 }
-
 //This is for displaying percentages 
-function SplitPercentages({ item }) {
-  return <View style={styles.groupMember}>
-    <Icon
-      name='user'
-      type='font-awesome'
-    />
-    <Text style={styles.modalText}>{item.displayName}</Text>
-    <TextInput
-      style={styles.inputBox}
-      value={String(item.expense)}
-      placeholder='0.00'
-    />
-  </View>
+function SplitPercentages({ item, handlePercentageChange, handleInputChange }) {
+
+  return (
+    <View style={styles.groupMember}>
+      <Icon
+        name='user'
+        type='font-awesome'
+      />
+      <Text style={styles.modalText}>{item.displayName}</Text>
+      <View style={{ width: "50%", flexDirection: "row", alignItems: 'center', justifyContent: 'space-evenly' }}>
+        <TextInput
+          style={styles.inputBox}
+          value={String(item.percentage)}
+          keyboardType="numeric"
+          onChangeText={(text) => { handleInputChange(text, item) }}
+          placeholder='0'
+        />
+        <Text>%</Text>
+      </View>
+
+    </View>
+  )
 }
 //This is for displaying percentages 
 
@@ -191,7 +291,7 @@ const styles = StyleSheet.create({
     marginHorizontal: "5%",
   },
   inputBox: {
-    width: '40%',
+    width: '50%',
     borderColor: 'lightgray',
     borderWidth: .5,
     borderColor: 'gray',
@@ -218,6 +318,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'gray'
+  },
+  warningText: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
 
