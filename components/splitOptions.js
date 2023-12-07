@@ -86,23 +86,24 @@ const SplitOptionsOverlay = ({ isVisible, onClose, selectedGroup, selectedActivi
     }
   };
 
-  const userListwithExpenseSplitPercentage = usersInGroup.map(user => {
-    const percentageObj = splitPercentages.find(obj => obj.key === user.key);
-    const userExpense = percentageObj
-      ? totalExpense * (parseFloat(percentageObj.percentage) * 0.01)
-      : 0; // Default to 0 if no percentage found
-    const userCarbonCost = percentageObj
-      ? currCarbonCost * (parseFloat(percentageObj.percentage) * 0.01)
-      : 0; // Default to 0 if no percentage found
-    return {
-      ...user,
-      expense: userExpense,
-      carbonCost: userCarbonCost,
-    };
-  });
+
 
   // save data to AddExScreen
-  const handleSave = (userListWithExpenseandCarbonSplitEvenly, userListwithExpenseSplitPercentage, selectedSplitOption) => {
+  const handleSave = (userListWithExpenseandCarbonSplitEvenly, usersInGroup, selectedSplitOption) => {
+    const userListwithExpenseSplitPercentage = usersInGroup.map(user => {
+      const percentageObj = splitPercentages.find(obj => obj.key === user.key);
+      const userExpense = percentageObj
+        ? totalExpense * (parseFloat(percentageObj.percentage) * 0.01)
+        : 0; // Default to 0 if no percentage found
+      const userCarbonCost = percentageObj
+        ? currCarbonCost * (parseFloat(percentageObj.percentage) * 0.01)
+        : 0; // Default to 0 if no percentage found
+      return {
+        ...user,
+        expense: userExpense,
+        carbonCost: userCarbonCost,
+      };
+    });
     if (selectedSplitOption === 1) {
       onSaveUserListWithExpense(userListWithExpenseandCarbonSplitEvenly);
     } else if (selectedSplitOption ===2 ){

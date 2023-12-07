@@ -123,8 +123,9 @@ function SignupBox({navigation}) {
         <Button
           onPress={async () => {
             try {
-              await signUp(displayName, email, password);
+              const newUser = await signUp(displayName, email, password);
               navigation.navigate("HomeSet");
+              dispatch(addUser(newUser));
             } catch(error) {
               Alert.alert("Sign Up Error", error.message,[{ text: "OK" }])
             }
