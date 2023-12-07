@@ -187,12 +187,19 @@ const loadUsers = (state, users) => {
   }
 }
 
-const updateUsers = (state, key, updatedUser) => {
+const updateUser = (state, newUserList) => {
+  console.log("In the reducer-> received updatedUserList from actions: ",newUserList);
+
+
   let { listUsers } = state;
-  let newUsers = listUsers.map(user => user.key === key ? { ...user, ...updatedUser } : user);
+  let newUsers = listUsers.map(user => {
+    const newUser = newUserList.find(newUser => newUser.key === user.key);
+    return newUser ? { ...user, carbonCost: newUser.carbonCost, expense: newUser.expense } : user;
+  });
+  console.log(newUsers);
   return {
     ...state,
-    listUsers: newUsers
+    listUsers: [...newUsers]
   };
 }
 // const loadGroups = (state, groups) => {
@@ -321,7 +328,7 @@ function rootReducer(state = initialState, action) {
     case ADD_USER:
       return addUser(state, action.payload.newDisplayName, action.payload.newEmail, action.payload.newExpense, payload.key);
     case UPDATE_USER:
-      return updateUser(state, payload.key, payload.updatedUser);
+      return updateUser(state, payload.newUserList);
     case ADD_EXPENSE:
       return addExpense(state, action.payload.newActivityType, action.payload.newCarbonCost, action.payload.newGroup, action.payload.newExpenseAmt, action.payload.newSplit, action.payload.newTags, payload.key);
     // case UPDATE_GROUP:
