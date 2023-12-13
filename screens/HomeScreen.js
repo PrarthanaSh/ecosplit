@@ -10,12 +10,14 @@ import { useEffect, useState } from 'react';
 import { loadUsers } from '../data/Actions';
 import { useDispatch, useSelector } from 'react-redux';
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const dispatch = useDispatch()
   const userId = getAuthUser().uid;
+  const [currentUser, setCurrentUser] = useState(null)
+  const [isLoading, setIsLoading] = useState(true);
   // const [userExpenses, setUserExpenses] = useState('');
   // const [carbonEmission, setCarbonEmission] = useState('');
 
@@ -43,13 +45,38 @@ function HomeScreen({navigation}) {
   useEffect(() => {
     // loadOneExpense();
     dispatch(loadUsers())
-    console.log("user: ", currentUser, userId)
   }, []);
 
   const allUsers = useSelector((state) => state.listUsers);
-  console.log(allUsers)
-  const currentUser = allUsers.find(user => user.key === userId)
 
+  useEffect(() => {
+    // This will run when `allUsers` or `userId` changes
+    if (allUsers.length > 0) {
+      const findCurrentUser = allUsers.find(user => user.key === userId);
+      if (findCurrentUser !== currentUser) {
+        setCurrentUser(findCurrentUser); // This will trigger a re-render
+        setIsLoading(false);
+      }
+    }
+  }, [allUsers, userId]); // Dependencies array
+  
+
+  useEffect(() => {
+    if (currentUser) {
+      console.log("Current user data:", currentUser);
+    }
+  }, [currentUser]);
+
+
+  // useEffect(()=>{
+  //   if (currentUser){
+  //     const currentCarbonCost = currentUser.currentCarbonCost
+  //     const currentExpense = currentUser.expense
+  //   }else{
+  //     const currentCarbonCost = null
+  //     const currentExpense = null
+  //   }
+  // }, currentUser)
 
   return (
     <View style={styles.container}>
@@ -57,10 +84,13 @@ function HomeScreen({navigation}) {
       <Text style={styles.expenseSubject}>Expenses</Text>
 
       {/* Carbon Emission */}
-      <Text style={styles.carbonEmission}>Total carbon emissions are {} g</Text>
+      <Text style={styles.carbonEmission}>{isLoading ? "Loading..." : (currentUser ? `Total carbon emissions are ${currentUser.carbonCost}g` : `Total carbon emissions  are not available`)}</Text>
 
       {/* Expense Amount */}
-      <Text style={styles.expenseAmount}>Total expenses are $ {}</Text>
+      <Text style={styles.expenseAmount}>
+        {isLoading ? "Loading..." : (currentUser ? `Total expenses are $ ${currentUser.expense}` : `Total expenses are not available`)}
+      </Text>
+
 
       {/* Image */}
       <Image
@@ -71,7 +101,7 @@ function HomeScreen({navigation}) {
 
       {/* User Sign Out */}
       <Text>
-        You're signed in, { getAuthUser().displayName }!
+        You're signed in, {getAuthUser().displayName}!
       </Text>
       <Button
         onPress={async () => {
@@ -79,7 +109,7 @@ function HomeScreen({navigation}) {
             await signOut();
             navigation.navigate('Login');
           } catch (error) {
-            Alert.alert("Sign In Error", error.message,[{ text: "OK" }])
+            Alert.alert("Sign In Error", error.message, [{ text: "OK" }])
           }
         }}
         buttonStyle={styles.signOut}
