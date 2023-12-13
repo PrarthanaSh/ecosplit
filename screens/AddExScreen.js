@@ -6,7 +6,7 @@ import { Icon, Button } from '@rneui/themed';
 import SplitOptionsOverlay from "../components/splitOptions";
 import TagsDisplay from "../components/TagsDisplay";
 import { useSelector, useDispatch } from "react-redux";
-import { addExpense, loadActivities, loadGroups, updateUser} from "../data/Actions";
+import { addExpense, loadActivities, loadGroups, updateUser } from "../data/Actions";
 
 
 function AddExScreen({ navigation }) {
@@ -15,7 +15,7 @@ function AddExScreen({ navigation }) {
   useEffect(() => {
     dispatch(loadActivities());
     dispatch(loadGroups());
- 
+
   }, []);
 
 
@@ -32,6 +32,7 @@ function AddExScreen({ navigation }) {
   const [carbonCost, setCarbonCost] = useState('');
   const [savedUserListWithExpense, setSavedUserListWithExpense] = useState(null);
   const [tagsAdjustment, setTagsAdjustment] = useState(0);
+  const [showSavedOverlay, setShowSavedOverlay] = useState(false);
 
   //Modal component
   const isDisabled = !selectedActivityType;
@@ -69,6 +70,14 @@ function AddExScreen({ navigation }) {
     console.log("Inside calculateCarbonCost->savedUserListWithExpense = ", savedUserListWithExpense);
 
     dispatch(addExpense(activityKey, currCarbonCost, groupKey, expenseAmt, splitDetails, selectedTags));
+
+    setActivityTags('')
+    setCarbonCost('')
+    setExpenseAmt('')
+    setGroup('')
+    setSavedUserListWithExpense(null)
+    setSelectedActivityType('')
+    setTagsAdjustment('')
   }
 
   const handleUserListWithExpense = (userList) => {
@@ -91,8 +100,14 @@ function AddExScreen({ navigation }) {
     dispatch(updateUser(savedUserListWithExpense));
   }
 
+  // popup for saving expense
+  const SavedOverlay = () => (
+    <View style={styles.savedOverlay}>
+      <Text style={styles.savedText}>Saved</Text>
+    </View>
+  );
 
-  
+
   return (
     // <KeyboardAvoidingView
     // behavior={Platform.OS === 'ios' ? 'padding' : null}
@@ -103,6 +118,8 @@ function AddExScreen({ navigation }) {
     >
       <View style={styles.container}>
         {/* Container for Expense Title dropdown */}
+        {/* saved popup */}
+        {showSavedOverlay && <SavedOverlay />}
         <View style={styles.inputContainer}>
           <Text style={styles.labelText}>Expense Title</Text>
 
@@ -218,6 +235,8 @@ function AddExScreen({ navigation }) {
             onPress={() => {
               calculateCarbonCost()
               updateUserList()
+              setShowSavedOverlay(true);
+              setTimeout(() => setShowSavedOverlay(false), 2000);
             }}
           />
         </View>
@@ -324,6 +343,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#252926',
     borderRadius: 40,
     padding: "4%",
+  },
+  savedOverlay: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -50 }, { translateY: -50 }],
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 10,
+  },
+  savedText: {
+    fontSize: 20,
+    color: 'white',
   },
 });
 
